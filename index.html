@@ -358,7 +358,7 @@
                         <option value="All">All</option>
                     </select>
                     
-                    <button class="upload-btn" id="customizeBtn" style="display: none; background: #6b7280;">
+                    <button class="upload-btn" id="customizeBtn">
                         ⚙️ Customize Charts
                     </button>
                     
@@ -592,6 +592,16 @@
                         </select>
                     </div>
                     <div>
+                        <label>Chart Type:</label>
+                        <select onchange="updateChartConfig(${index}, 'type', this.value)">
+                            ${chartTypes.map(type => 
+                                `<option value="${type.value}" ${type.value === (config.type || 'bar') ? 'selected' : ''}>
+                                    <span class="chart-type-visual ${type.visual}"></span>${type.label}
+                                </option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div>
                         <button class="btn-small btn-red" onclick="removeChart(${index})">Remove</button>
                     </div>
                 `;
@@ -617,7 +627,8 @@
             const newChart = {
                 id: `chart_${Date.now()}`,
                 field: availableFields[0] || '',
-                title: 'New Chart'
+                title: 'New Chart',
+                type: 'bar'
             };
             chartConfigs.push(newChart);
             updateCustomizationPanel();
@@ -647,13 +658,100 @@
                 chartDiv.className = 'chart-card';
                 chartDiv.innerHTML = `
                     <h3 class="chart-title">${config.title}</h3>
-                    <div class="data-list" id="${config.id}"></div>
+                    <div class="chart-content" id="${config.id}"></div>
                 `;
                 container.appendChild(chartDiv);
                 
-                // Populate chart data
-                createDataList(config.id, getFieldCounts(config.field));
+                // Populate chart data with type
+                const chartData = getFieldCounts(config.field);
+                createDataList(config.id, chartData, config.type || 'bar');
             });
+        }
+        
+        // Export to PDF function
+        function exportToPDF() {
+            const button = document.getElementById('exportBtn');
+            button.textContent = '📄 Generating PDF...';
+            button.disabled = true;
+            
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank');
+            const currentDate = new Date().toLocaleDateString();
+            const recordCount = formatNumber(filteredData.length);
+            
+            // Get current dashboard content
+            const summaryCards = document.getElementById('summaryCards').innerHTML;
+            const chartsContainer = document.getElementById('chartsContainer').innerHTML;
+            
+            const printContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Voter Demographics Dashboard - ${currentDate}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+                        .title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+                        .subtitle { color: #666; margin-bottom: 10px; }
+                        .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 30px; }
+                        .summary-card { border: 1px solid #ddd; padding: 15px; text-align: center; border-radius: 5px; }
+                        .summary-number { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+                        .summary-label { font-size: 12px; color: #666; }
+                        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+                        .chart-card { border: 1px solid #ddd; padding: 15px; border-radius: 5px; break-inside: avoid; }
+                        .chart-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+                        .data-list { display: flex; flex-direction: column; gap: 5px; }
+                        .data-item { display: flex; justify-content: space-between; padding: 8px; background: #f9f9f9; border-radius: 3px; }
+                        .data-name { font-weight: 500; }
+                        .data-stats { text-align: right; }
+                        .data-count { font-weight: 600; }
+                        .data-percent { font-size: 11px; color: #666; }
+                        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
+                        .blue { color: #2563eb; }
+                        .green { color: #059669; }
+                        .purple { color: #7c3aed; }
+                        .orange { color: #ea580c; }
+                        .red { color: #dc2626; }
+                        @media print {
+                            body { margin: 0; }
+                            .chart-card { page-break-inside: avoid; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="title">State Breakdown - Voter Demographics</div>
+                        <div class="subtitle">Dashboard Report - ${currentDate}</div>
+                        <div class="subtitle">Total Records: ${recordCount}</div>
+                    </div>
+                    
+                    <div class="summary-grid">
+                        ${summaryCards}
+                    </div>
+                    
+                    <div class="charts-grid">
+                        ${chartsContainer}
+                    </div>
+                    
+                    <div class="footer">
+                        <p>Generated from Voter Demographics Dashboard</p>
+                        <p>Report created on ${currentDate}</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            
+            // Auto-print after a short delay
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+                
+                button.textContent = '📄 Export Dashboard to PDF';
+                button.disabled = false;
+            }, 1000);
         }
         
         // Get field counts
@@ -672,26 +770,87 @@
         }
         
         // Create data visualization
-        function createDataList(containerId, data) {
+        function createDataList(containerId, data, chartType = 'bar') {
             const container = document.getElementById(containerId);
             const total = filteredData.length;
             
             container.innerHTML = '';
             
-            data.forEach(item => {
+            if (chartType === 'pie' || chartType === 'donut') {
+                // Create pie/donut chart with CSS
+                const chartDiv = document.createElement('div');
+                chartDiv.style.cssText = `
+                    width: 200px;
+                    height: 200px;
+                    border-radius: 50%;
+                    margin: 0 auto 1rem auto;
+                    position: relative;
+                `;
+                
+                const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
+                let currentAngle = 0;
+                
+                data.slice(0, 6).forEach((item, index) => {
+                    const percentage = total > 0 ? (item.count / total) * 100 : 0;
+                    const angle = (percentage / 100) * 360;
+                    
+                    const slice = document.createElement('div');
+                    slice.style.cssText = `
+                        position: absolute;
+                        width: 50%;
+                        height: 50%;
+                        top: 50%;
+                        left: 50%;
+                        transform-origin: 0 0;
+                        transform: rotate(${currentAngle}deg);
+                        background: conic-gradient(${colors[index]} 0deg ${angle}deg, transparent ${angle}deg 360deg);
+                        clip-path: polygon(0 0, 100% 0, 50% 100%);
+                    `;
+                    chartDiv.appendChild(slice);
+                    currentAngle += angle;
+                });
+                
+                if (chartType === 'donut') {
+                    const innerCircle = document.createElement('div');
+                    innerCircle.style.cssText = `
+                        position: absolute;
+                        top: 25%;
+                        left: 25%;
+                        width: 50%;
+                        height: 50%;
+                        background: white;
+                        border-radius: 50%;
+                    `;
+                    chartDiv.appendChild(innerCircle);
+                }
+                
+                container.appendChild(chartDiv);
+            }
+            
+            // Always show the data list
+            const listDiv = document.createElement('div');
+            listDiv.className = 'data-list';
+            
+            data.forEach((item, index) => {
                 const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
+                const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
                 
                 const div = document.createElement('div');
                 div.className = 'data-item';
                 div.innerHTML = `
-                    <span class="data-name">${item.name}</span>
+                    <span class="data-name">
+                        <span style="display: inline-block; width: 12px; height: 12px; background: ${colors[index % colors.length]}; margin-right: 8px; border-radius: 2px;"></span>
+                        ${item.name}
+                    </span>
                     <div class="data-stats">
                         <div class="data-count">${formatNumber(item.count)}</div>
                         <div class="data-percent">${percentage}%</div>
                     </div>
                 `;
-                container.appendChild(div);
+                listDiv.appendChild(div);
             });
+            
+            container.appendChild(listDiv);
         }
         
         // Update all dashboard components
@@ -755,6 +914,7 @@
                         // Show customize button
                         const customizeBtn = document.getElementById('customizeBtn');
                         customizeBtn.style.display = 'inline-block';
+                        customizeBtn.style.background = '#6b7280';
                         console.log('Customize button should now be visible');
                         
                         document.getElementById('status').textContent = `Loaded ${formatNumber(csvData.length)} records - Click Customize Charts to configure`;
@@ -782,8 +942,10 @@
             document.getElementById('csvFile').addEventListener('change', handleFileUpload);
             document.getElementById('mainFilter').addEventListener('change', filterData);
             document.getElementById('customizeBtn').addEventListener('click', function() {
+                console.log('Customize button clicked!');
                 const panel = document.getElementById('customizePanel');
                 panel.classList.toggle('show');
+                console.log('Panel visibility toggled. Is visible:', panel.classList.contains('show'));
             });
             document.getElementById('closeCustomizeBtn').addEventListener('click', function() {
                 document.getElementById('customizePanel').classList.remove('show');
@@ -794,6 +956,7 @@
                 updateFilterOptions();
                 filterData();
             });
+            document.getElementById('exportBtn').addEventListener('click', exportToPDF);
             
             // Load sample data
             currentData = generateSampleData();
@@ -807,10 +970,10 @@
             updateCustomizationPanel();
             updateDashboard();
             
-            // Show customize button for sample data
+            // Make sure customize button is visible
             const customizeBtn = document.getElementById('customizeBtn');
             customizeBtn.style.display = 'inline-block';
-            console.log('Customize button shown');
+            customizeBtn.style.background = '#6b7280';
             
             document.getElementById('status').textContent = 'Ready - Sample data loaded';
             console.log('Dashboard initialized successfully!');
