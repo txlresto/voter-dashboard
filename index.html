@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Demographics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.8.0/lib/index.js"></script>
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } = Recharts;
+        const { Upload, Users, Home, Phone, Shield, Settings, Eye, EyeOff, GripVertical } = LucideReact;
+
+        const VoterDashboard = () => {
+          const [csvData, setCsvData] = useState(null);
+          const [selectedState, setSelectedState] = useState('All');
+          const [loading, setLoading] = useState(false);
+          const [showCustomization, setShowCustomization] = useState(false);
+          const [chartConfigs, setChartConfigs] = useState([
+            { id: 'gender', field: 'gender', type: 'donut', title: 'Gender', visible: true, order: 0, measureField: null, measureType: 'count' },
+            { id: 'party', field: 'party', type: 'horizontal_bar', title: 'Modeled Party', visible: true, order: 1, measureField: null, measureType: 'count' },
+            { id: 'age', field: 'age_range', type: 'horizontal_bar', title: 'Voters Age Range', visible: true, order: 2, measureField: null, measureType: 'count' },
+            { id: 'education', field: 'education', type: 'horizontal_bar', title: 'Modeled Education', visible: true, order: 3, measureField: null, measureType: 'count' },
+            { id: 'ethnicity', field: 'ethnicity', type: 'horizontal_bar', title: 'Modeled Ethnicity', visible: true, order: 4, measureField: null, measureType: 'count' },
+            { id: 'vote_freq', field: 'vote_frequency', type: 'horizontal_bar', title: 'Vote Frequency All Elections', visible: true, order: 5, measureField: null, measureType: 'count' },
+            { id: 'counties', field: 'county', type: 'top_n', title: 'Top 5 Counties', visible: true, order: 6, topN: 5, measureField: null, measureType: 'count' }
+          ]);
+
+          // Mock data that matches your voter structure
+          const mockData = useMemo(() => [
+            {
+              state: 'AZ',
+              gender: 'F',
+              age_range: '65 and over',
+              party: 'Republican',
+              ethnicity: 'White Self Reported',
+              education: 'Completed College Likely',
+              vote_frequency: 1,
+              county: 'MARICOPA COUNTY',
+              cell_phone: 'Yes',
+              landline: 'Yes',
+              household: 'Yes',
+              veteran: 'No'
+            },
+            ...Array.from({ length: 1000 }, (_, i) => ({
+              state: ['AZ', 'VA', 'TX', 'FL', 'CA'][i % 5],
+              gender: i % 2 === 0 ? 'F' : 'M',
+              age_range: [
+                '18 to 19', '20 to 24', '25 to 29', '30 to 34', '35 to 39',
+                '40 to 44', '45 to 49', '50 to 54', '55 to 64', '65 and over'
+              ][i % 10],
+              party: ['Republican', 'Democratic', 'Non-Partisan'][i % 3],
+              ethnicity: [
+                'White Self Reported', 'Hispanic', 'African or Af-Am Self Reported',
+                'Other Undefined Race', 'East Asian', 'Native American'
+              ][i % 6],
+              education: [
+                'Completed College Likely', 'Completed High School Likely',
+                'Completed Graduate School Likely', 'Attended But Did Not Complete College Likely',
+                'Did Not Complete High School Likely', 'Attended Vocational/Technical School Likely'
+              ][i % 6],
+              vote_frequency: Math.floor(Math.random() * 9),
+              county: `COUNTY_${i % 20}`,
+              cell_phone: Math.random() > 0.4 ? 'Yes' : 'No',
+              landline: Math.random() > 0.3 ? 'Yes' : 'No',
+              household: 'Yes',
+              veteran: Math.random() > 0.9 ? 'Yes' : 'No'
+            }))
+          ], []);
+
+          // Initialize with mock data
+          useEffect(() => {
+            if (!csvData) {
+              setCsvData(mockData);
+            }
+          }, [csvData, mockData]);
+
+          const handleFileUpload = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            setLoading(true);
+            Papa.parse(file, {
+              header: true,
+              dynamicTyping: true,
+              skipEmptyLines: true,
+              delimitersToGuess: [',', '\t', '|', ';'],
+              complete: (results) => {
+                setCsvData(results.data);
+                setLoading(false);
+              },
+              error: (error) => {
+                console.error('Error parsing CSV:', error);
+                setLoading(false);
+              }
+            });
+          };
+
+          // Chart and measurement type options
+          const chartTypes = [
+            { value: 'horizontal_bar', label: 'Horizontal Bar Chart' },
+            { value: 'vertical_bar', label: 'Vertical Bar Chart' },
+            { value: 'pie', label: 'Pie Chart' },
+            { value: 'donut', label: 'Donut Chart' },
+            { value: 'top_n', label: 'Top N List' }
+          ];
+
+          const measureTypes = [
+            { value: 'count', label: 'Count Records' },
+            { value: 'count_unique', label: 'Count Unique Values' },
+            { value: 'sum', label: 'Sum Values' },
+            { value: 'average', label: 'Average Values' },
+            { value: 'min', label: 'Minimum Value' },
+            { value: 'max', label: 'Maximum Value' }
+          ];
+
+          // Data processing functions
+          const availableFields = useMemo(() => {
+            if (!csvData || csvData.length === 0) return [];
+            return Object.keys(csvData[0]).filter(key => 
+              typeof csvData[0][key] === 'string' || typeof csvData[0][key] === 'number'
+            );
+          }, [csvData]);
+
+          const numericFields = useMemo(() => {
+            if (!csvData || csvData.length === 0) return [];
+            return Object.keys(csvData[0]).filter(key => 
+              typeof csvData[0][key] === 'number' || 
+              (typeof csvData[0][key] === 'string' && !isNaN(parseFloat(csvData[0][key])))
+            );
+          }, [csvData]);
+
+          const allFields = useMemo(() => {
+            if (!csvData || csvData.length === 0) return [];
+            return Object.keys(csvData[0]);
+          }, [csvData]);
+
+          const availableStates = useMemo(() => {
+            if (!csvData || csvData.length === 0) return ['All'];
+            const states = [...new Set(csvData.map(row => row.state).filter(state => state))];
+            return ['All', ...states.sort()];
+          }, [csvData]);
+
+          const filteredData = useMemo(() => {
+            if (!csvData) return [];
+            let filtered = csvData;
+            if (selectedState !== 'All') {
+              filtered = filtered.filter(row => row.state === selectedState);
+            }
+            return filtered;
+          }, [csvData, selectedState]);
+
+          const summaryMetrics = useMemo(() => {
+            if (!filteredData.length) return {};
+            return {
+              totalVoters: filteredData.length,
+              activeVoters: filteredData.length,
+              households: filteredData.filter(row => row.household === 'Yes').length,
+              cellPhones: filteredData.filter(row => row.cell_phone === 'Yes').length,
+              landlines: filteredData.filter(row => row.landline === 'Yes').length,
+              veterans: filteredData.filter(row => row.veteran === 'Yes').length
+            };
+          }, [filteredData]);
+
+          const formatNumber = (num) => {
+            if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+            if (num >= 1000) return `${(num / 1000).toFixed(0)}K`;
+            return num.toString();
+          };
+
+          const updateChartConfig = (id, updates) => {
+            setChartConfigs(prev => 
+              prev.map(config => 
+                config.id === id ? { ...config, ...updates } : config
+              )
+            );
+          };
+
+          const addChart = () => {
+            const newId = `chart_${Date.now()}`;
+            const newChart = {
+              id: newId,
+              field: availableFields[0] || '',
+              type: 'horizontal_bar',
+              title: 'New Chart',
+              visible: true,
+              order: chartConfigs.length,
+              measureField: null,
+              measureType: 'count'
+            };
+            setChartConfigs(prev => [...prev, newChart]);
+          };
+
+          const removeChart = (id) => {
+            setChartConfigs(prev => prev.filter(config => config.id !== id));
+          };
+
+          const getMeasureFieldOptions = (measureType) => {
+            switch (measureType) {
+              case 'count': return [];
+              case 'count_unique': return allFields;
+              case 'sum':
+              case 'average':
+              case 'min':
+              case 'max': return numericFields;
+              default: return allFields;
+            }
+          };
+
+          const getMeasurementLabel = (config) => {
+            switch (config.measureType) {
+              case 'count': return 'Count';
+              case 'count_unique': return config.measureField ? `Unique ${config.measureField}` : 'Count Unique';
+              case 'sum': return config.measureField ? `Sum of ${config.measureField}` : 'Sum';
+              case 'average': return config.measureField ? `Avg ${config.measureField}` : 'Average';
+              case 'min': return config.measureField ? `Min ${config.measureField}` : 'Minimum';
+              case 'max': return config.measureField ? `Max ${config.measureField}` : 'Maximum';
+              default: return 'Count';
+            }
+          };
+
+          const generateChartData = (config) => {
+            if (!filteredData.length || !config.field) return [];
+            
+            const grouped = filteredData.reduce((acc, row) => {
+              const groupKey = row[config.field];
+              if (groupKey !== undefined && groupKey !== null && groupKey !== '') {
+                if (!acc[groupKey]) acc[groupKey] = [];
+                acc[groupKey].push(row);
+              }
+              return acc;
+            }, {});
+            
+            let data = Object.entries(grouped).map(([groupName, groupData]) => {
+              let value;
+              
+              switch (config.measureType) {
+                case 'count':
+                  value = groupData.length;
+                  break;
+                case 'count_unique':
+                  if (config.measureField) {
+                    const uniqueValues = new Set(
+                      groupData.map(row => row[config.measureField]).filter(val => val !== undefined && val !== null && val !== '')
+                    );
+                    value = uniqueValues.size;
+                  } else {
+                    value = groupData.length;
+                  }
+                  break;
+                case 'sum':
+                  if (config.measureField) {
+                    value = groupData.reduce((sum, row) => {
+                      const val = parseFloat(row[config.measureField]);
+                      return sum + (isNaN(val) ? 0 : val);
+                    }, 0);
+                  } else {
+                    value = groupData.length;
+                  }
+                  break;
+                case 'average':
+                  if (config.measureField) {
+                    const validValues = groupData.map(row => parseFloat(row[config.measureField])).filter(val => !isNaN(val));
+                    value = validValues.length > 0 ? validValues.reduce((sum, val) => sum + val, 0) / validValues.length : 0;
+                  } else {
+                    value = groupData.length;
+                  }
+                  break;
+                case 'min':
+                  if (config.measureField) {
+                    const validValues = groupData.map(row => parseFloat(row[config.measureField])).filter(val => !isNaN(val));
+                    value = validValues.length > 0 ? Math.min(...validValues) : 0;
+                  } else {
+                    value = groupData.length;
+                  }
+                  break;
+                case 'max':
+                  if (config.measureField) {
+                    const validValues = groupData.map(row => parseFloat(row[config.measureField])).filter(val => !isNaN(val));
+                    value = validValues.length > 0 ? Math.max(...validValues) : 0;
+                  } else {
+                    value = groupData.length;
+                  }
+                  break;
+                default:
+                  value = groupData.length;
+              }
+              
+              return { name: groupName.toString(), value: value };
+            }).sort((a, b) => b.value - a.value);
+            
+            if (config.type === 'top_n' && config.topN) {
+              data = data.slice(0, config.topN);
+            }
+            
+            return data;
+          };
+
+          const visibleCharts = useMemo(() => {
+            return chartConfigs.filter(config => config.visible).sort((a, b) => a.order - b.order);
+          }, [chartConfigs]);
+
+          const renderChart = (config) => {
+            const data = generateChartData(config);
+            if (!data.length) return React.createElement('div', { className: "text-gray-500 text-center py-8" }, "No data available");
+
+            const COLORS = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
+
+            switch (config.type) {
+              case 'horizontal_bar':
+                return React.createElement(ResponsiveContainer, { width: "100%", height: Math.max(250, data.length * 25) },
+                  React.createElement(BarChart, { data: data, layout: "horizontal", margin: { left: 120 } },
+                    React.createElement(CartesianGrid, { strokeDasharray: "3 3" }),
+                    React.createElement(XAxis, { type: "number", tickFormatter: formatNumber }),
+                    React.createElement(YAxis, { dataKey: "name", type: "category", width: 120 }),
+                    React.createElement(Tooltip, { formatter: (value) => [formatNumber(value), getMeasurementLabel(config)] }),
+                    React.createElement(Bar, { dataKey: "value", fill: "#dc2626" })
+                  )
+                );
+              
+              case 'vertical_bar':
+                return React.createElement(ResponsiveContainer, { width: "100%", height: 300 },
+                  React.createElement(BarChart, { data: data, margin: { bottom: 60 } },
+                    React.createElement(CartesianGrid, { strokeDasharray: "3 3" }),
+                    React.createElement(XAxis, { dataKey: "name", angle: -45, textAnchor: "end", height: 80 }),
+                    React.createElement(YAxis, { tickFormatter: formatNumber }),
+                    React.createElement(Tooltip, { formatter: (value) => [formatNumber(value), getMeasurementLabel(config)] }),
+                    React.createElement(Bar, { dataKey: "value", fill: "#dc2626" })
+                  )
+                );
+              
+              case 'pie':
+                return React.createElement('div', {},
+                  React.createElement(ResponsiveContainer, { width: "100%", height: 250 },
+                    React.createElement(PieChart, {},
+                      React.createElement(Pie, {
+                        data: data, cx: "50%", cy: "50%", outerRadius: 100, dataKey: "value"
+                      },
+                        data.map((entry, index) => 
+                          React.createElement(Cell, { key: `cell-${index}`, fill: COLORS[index % COLORS.length] })
+                        )
+                      ),
+                      React.createElement(Tooltip, { formatter: (value) => [formatNumber(value), getMeasurementLabel(config)] })
+                    )
+                  ),
+                  React.createElement('div', { className: "flex flex-wrap justify-center gap-2 mt-2" },
+                    data.slice(0, 6).map((entry, index) =>
+                      React.createElement('div', { key: entry.name, className: "flex items-center gap-1 text-xs" },
+                        React.createElement('div', { 
+                          className: "w-3 h-3 rounded", 
+                          style: { backgroundColor: COLORS[index % COLORS.length] }
+                        }),
+                        React.createElement('span', {}, `${entry.name}: ${((entry.value / filteredData.length) * 100).toFixed(1)}%`)
+                      )
+                    )
+                  )
+                );
+              
+              case 'donut':
+                return React.createElement('div', {},
+                  React.createElement(ResponsiveContainer, { width: "100%", height: 250 },
+                    React.createElement(PieChart, {},
+                      React.createElement(Pie, {
+                        data: data, cx: "50%", cy: "50%", innerRadius: 60, outerRadius: 100, paddingAngle: 5, dataKey: "value"
+                      },
+                        data.map((entry, index) => 
+                          React.createElement(Cell, { key: `cell-${index}`, fill: COLORS[index % COLORS.length] })
+                        )
+                      ),
+                      React.createElement(Tooltip, { formatter: (value) => [formatNumber(value), getMeasurementLabel(config)] })
+                    )
+                  ),
+                  React.createElement('div', { className: "flex flex-wrap justify-center gap-2 mt-2" },
+                    data.slice(0, 6).map((entry, index) =>
+                      React.createElement('div', { key: entry.name, className: "flex items-center gap-1 text-xs" },
+                        React.createElement('div', { 
+                          className: "w-3 h-3 rounded", 
+                          style: { backgroundColor: COLORS[index % COLORS.length] }
+                        }),
+                        React.createElement('span', {}, `${entry.name}: ${((entry.value / filteredData.length) * 100).toFixed(1)}%`)
+                      )
+                    )
+                  )
+                );
+              
+              case 'top_n':
+                return React.createElement('div', { className: "space-y-2" },
+                  data.map((item, index) =>
+                    React.createElement('div', { key: item.name, className: "flex justify-between items-center p-2 bg-gray-50 rounded" },
+                      React.createElement('span', { className: "font-medium" }, `${index + 1}. ${item.name}`),
+                      React.createElement('div', { className: "text-right" },
+                        React.createElement('span', { className: "text-gray-900 font-semibold" }, formatNumber(item.value)),
+                        React.createElement('div', { className: "text-xs text-gray-500" }, getMeasurementLabel(config))
+                      )
+                    )
+                  )
+                );
+              
+              default:
+                return React.createElement('div', { className: "text-gray-500 text-center py-8" }, "Chart type not supported");
+            }
+          };
+
+          return React.createElement('div', { className: "min-h-screen bg-gray-50 p-4" },
+            React.createElement('div', { className: "max-w-7xl mx-auto" },
+              // Header
+              React.createElement('div', { className: "mb-6" },
+                React.createElement('h1', { className: "text-3xl font-bold text-gray-900 mb-4" }, "State Breakdown - Voter Demographics"),
+                
+                // File Upload Section
+                React.createElement('div', { className: "mb-4 p-4 bg-white rounded-lg shadow" },
+                  React.createElement('div', { className: "flex items-center gap-4 flex-wrap" },
+                    React.createElement('label', { className: "flex items-center gap-2 cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" },
+                      React.createElement(Upload, { size: 20 }),
+                      "Upload CSV",
+                      React.createElement('input', { 
+                        type: "file", 
+                        accept: ".csv", 
+                        onChange: handleFileUpload,
+                        className: "hidden"
+                      })
+                    ),
+                    
+                    React.createElement('select', {
+                      value: selectedState,
+                      onChange: (e) => setSelectedState(e.target.value),
+                      className: "px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                    },
+                      availableStates.map(state =>
+                        React.createElement('option', { key: state, value: state }, state)
+                      )
+                    ),
+                    
+                    React.createElement('button', {
+                      onClick: () => setShowCustomization(!showCustomization),
+                      className: "flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                    },
+                      React.createElement(Settings, { size: 20 }),
+                      "Customize Charts"
+                    ),
+                    
+                    loading && React.createElement('span', { className: "text-blue-600" }, "Processing...")
+                  )
+                )
+              ),
+
+              // Customization Panel
+              showCustomization && React.createElement('div', { className: "mb-6 p-4 bg-white rounded-lg shadow" },
+                React.createElement('h3', { className: "text-lg font-semibold mb-4" }, "Customize Charts"),
+                React.createElement('div', { className: "space-y-4 max-h-96 overflow-y-auto" },
+                  chartConfigs.map(config =>
+                    React.createElement('div', { key: config.id, className: "flex items-start gap-4 p-3 border border-gray-200 rounded" },
+                      React.createElement('div', { className: "flex items-center gap-2" },
+                        React.createElement(GripVertical, { className: "text-gray-400 cursor-move", size: 16 }),
+                        React.createElement('button', {
+                          onClick: () => updateChartConfig(config.id, { visible: !config.visible }),
+                          className: `p-1 rounded ${config.visible ? 'text-green-600' : 'text-gray-400'}`
+                        },
+                          config.visible ? React.createElement(Eye, { size: 16 }) : React.createElement(EyeOff, { size: 16 })
+                        )
+                      ),
+                      
+                      React.createElement('div', { className: "flex-1 space-y-2" },
+                        React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 gap-2" },
+                          React.createElement('input', {
+                            type: "text",
+                            value: config.title,
+                            onChange: (e) => updateChartConfig(config.id, { title: e.target.value }),
+                            placeholder: "Chart Title",
+                            className: "px-2 py-1 border border-gray-300 rounded text-sm"
+                          }),
+                          React.createElement('select', {
+                            value: config.field,
+                            onChange: (e) => updateChartConfig(config.id, { field: e.target.value }),
+                            className: "px-2 py-1 border border-gray-300 rounded text-sm"
+                          },
+                            React.createElement('option', { value: "" }, "Select Group By Field"),
+                            availableFields.map(field =>
+                              React.createElement('option', { key: field, value: field }, field)
+                            )
+                          )
+                        ),
+                        
+                        React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 gap-2" },
+                          React.createElement('select', {
+                            value: config.type,
+                            onChange: (e) => updateChartConfig(config.id, { type: e.target.value }),
+                            className: "px-2 py-1 border border-gray-300 rounded text-sm"
+                          },
+                            chartTypes.map(type =>
+                              React.createElement('option', { key: type.value, value: type.value }, type.label)
+                            )
+                          ),
+                          React.createElement('select', {
+                            value: config.measureType,
+                            onChange: (e) => {
+                              const newMeasureType = e.target.value;
+                              updateChartConfig(config.id, { 
+                                measureType: newMeasureType,
+                                measureField: newMeasureType === 'count' ? null : config.measureField
+                              });
+                            },
+                            className: "px-2 py-1 border border-gray-300 rounded text-sm"
+                          },
+                            measureTypes.map(type =>
+                              React.createElement('option', { key: type.value, value: type.value }, type.label)
+                            )
+                          )
+                        ),
+                        
+                        React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 gap-2" },
+                          config.measureType !== 'count' && React.createElement('select', {
+                            value: config.measureField || '',
+                            onChange: (e) => updateChartConfig(config.id, { measureField: e.target.value || null }),
+                            className: "px-2 py-1 border border-gray-300 rounded text-sm"
+                          },
+                            React.createElement('option', { value: "" }, "Select Measure Field"),
+                            getMeasureFieldOptions(config.measureType).map(field =>
+                              React.createElement('option', { key: field, value: field }, field)
+                            )
+                          ),
+                          
+                          config.type === 'top_n' && React.createElement('input', {
+                            type: "number",
+                            min: "1",
+                            max: "20",
+                            value: config.topN || 5,
+                            onChange: (e) => updateChartConfig(config.id, { topN: parseInt(e.target.value) }),
+                            placeholder: "Top N",
+                            className: "px-2 py-1 border border-gray-300 rounded text-sm"
+                          })
+                        )
+                      ),
+                      
+                      React.createElement('button', {
+                        onClick: () => removeChart(config.id),
+                        className: "px-2 py-1 text-red-600 hover:bg-red-50 rounded text-sm flex-shrink-0"
+                      }, "Remove")
+                    )
+                  )
+                ),
+                
+                React.createElement('div', { className: "mt-4 flex gap-2" },
+                  React.createElement('button', {
+                    onClick: addChart,
+                    className: "px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                  }, "Add Chart"),
+                  React.createElement('button', {
+                    onClick: () => setShowCustomization(false),
+                    className: "px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
+                  }, "Done")
+                )
+              ),
+
+              // Summary Cards
+              React.createElement('div', { className: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6" },
+                React.createElement('div', { className: "bg-white p-4 rounded-lg shadow text-center" },
+                  React.createElement(Users, { className: "mx-auto mb-2 text-gray-600", size: 24 }),
+                  React.createElement('div', { className: "text-2xl font-bold" }, formatNumber(summaryMetrics.totalVoters || 0)),
+                  React.createElement('div', { className: "text-sm text-gray-600" }, "Voters")
+                ),
+                React.createElement('div', { className: "bg-white p-4 rounded-lg shadow text-center" },
+                  React.createElement(Users, { className: "mx-auto mb-2 text-green-600", size: 24 }),
+                  React.createElement('div', { className: "text-2xl font-bold" }, formatNumber(summaryMetrics.activeVoters || 0)),
+                  React.createElement('div', { className: "text-sm text-gray-600" }, "Active Voters")
+                ),
+                React.createElement('div', { className: "bg-white p-4 rounded-lg shadow text-center" },
+                  React.createElement(Home, { className: "mx-auto mb-2 text-blue-600", size: 24 }),
+                  React.createElement('div', { className: "text-2xl font-bold" }, formatNumber(summaryMetrics.households || 0)),
+                  React.createElement('div', { className: "text-sm text-gray-600" }, "Households")
+                ),
+                React.createElement('div', { className: "bg-white p-4 rounded-lg shadow text-center" },
+                  React.createElement(Phone, { className: "mx-auto mb-2 text-purple-600", size: 24 }),
+                  React.createElement('div', { className: "text-2xl font-bold" }, formatNumber(summaryMetrics.cellPhones || 0)),
+                  React.createElement('div', { className: "text-sm text-gray-600" }, "Cell Phones")
+                ),
+                React.createElement('div', { className: "bg-white p-4 rounded-lg shadow text-center" },
+                  React.createElement(Phone, { className: "mx-auto mb-2 text-orange-600", size: 24 }),
+                  React.createElement('div', { className: "text-2xl font-bold" }, formatNumber(summaryMetrics.landlines || 0)),
+                  React.createElement('div', { className: "text-sm text-gray-600" }, "Landlines")
+                ),
+                React.createElement('div', { className: "bg-white p-4 rounded-lg shadow text-center" },
+                  React.createElement(Shield, { className: "mx-auto mb-2 text-red-600", size: 24 }),
+                  React.createElement('div', { className: "text-2xl font-bold" }, formatNumber(summaryMetrics.veterans || 0)),
+                  React.createElement('div', { className: "text-sm text-gray-600" }, "Veterans")
+                )
+              ),
+
+              // Charts Grid
+              React.createElement('div', { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+                visibleCharts.map(config =>
+                  React.createElement('div', { key: config.id, className: "bg-white p-6 rounded-lg shadow" },
+                    React.createElement('h3', { className: "text-lg font-semibold mb-4" }, config.title),
+                    renderChart(config)
+                  )
+                )
+              )
+            )
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(VoterDashboard));
+    </script>
+</body>
+</html>
