@@ -192,6 +192,94 @@
             color: #6b7280;
             font-size: 0.875rem;
         }
+        
+        .customize-panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .customize-panel.show {
+            display: block;
+        }
+        
+        .customize-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .field-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+        }
+        
+        .field-config label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        
+        .field-config input,
+        .field-config select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-green {
+            background: #059669;
+            color: white;
+        }
+        
+        .btn-green:hover {
+            background: #047857;
+        }
+        
+        .btn-gray {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-gray:hover {
+            background: #4b5563;
+        }
+        
+        .btn-red {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .btn-red:hover {
+            background: #b91c1c;
+        }
     </style>
 </head>
 <body>
@@ -206,12 +294,35 @@
                         <input type="file" accept=".csv" class="hidden" id="csvFile">
                     </label>
                     
-                    <select class="select" id="stateFilter">
-                        <option value="All">All States</option>
+                    <select class="select" id="mainFilter" style="display: none;">
+                        <option value="All">All</option>
                     </select>
+                    
+                    <button class="upload-btn" id="customizeBtn" style="display: none; background: #6b7280;">
+                        ⚙️ Customize Charts
+                    </button>
                     
                     <span class="status" id="status">Ready</span>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Customization Panel -->
+        <div class="customize-panel" id="customizePanel">
+            <h3 class="customize-title">Customize Charts & Filters</h3>
+            
+            <div id="filterConfig" style="margin-bottom: 1.5rem;">
+                <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Main Filter Field:</label>
+                <select class="select" id="filterFieldSelect">
+                    <option value="">No Filter</option>
+                </select>
+            </div>
+            
+            <div id="chartConfigs"></div>
+            
+            <div class="btn-group">
+                <button class="btn-small btn-green" id="addChartBtn">+ Add Chart</button>
+                <button class="btn-small btn-gray" id="closeCustomizeBtn">Done</button>
             </div>
         </div>
 
@@ -238,26 +349,8 @@
             </div>
         </div>
 
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h3 class="chart-title">Gender Distribution</h3>
-                <div class="data-list" id="genderChart"></div>
-            </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title">Party Affiliation</h3>
-                <div class="data-list" id="partyChart"></div>
-            </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title">Age Distribution</h3>
-                <div class="data-list" id="ageChart"></div>
-            </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title">Ethnicity Distribution</h3>
-                <div class="data-list" id="ethnicityChart"></div>
-            </div>
+        <div class="charts-grid" id="chartsContainer">
+            <!-- Charts will be dynamically generated here -->
         </div>
         
         <div class="footer">
@@ -270,6 +363,9 @@
         // Global variables
         let currentData = [];
         let filteredData = [];
+        let availableFields = [];
+        let chartConfigs = [];
+        let filterField = null;
         
         // Initialize with sample data
         function generateSampleData() {
@@ -298,6 +394,39 @@
             
             console.log('Sample data generated:', data.length, 'records');
             return data;
+        }
+        
+        // Default chart configurations for sample data
+        function getDefaultChartConfigs() {
+            return [
+                { id: 'gender', field: 'gender', title: 'Gender Distribution' },
+                { id: 'party', field: 'party', title: 'Party Affiliation' },
+                { id: 'age', field: 'age_range', title: 'Age Distribution' },
+                { id: 'ethnicity', field: 'ethnicity', title: 'Ethnicity Distribution' }
+            ];
+        }
+        
+        // Detect available fields from data
+        function detectFields(data) {
+            if (!data || data.length === 0) return [];
+            
+            const fields = Object.keys(data[0]).filter(key => {
+                // Only include fields that have some variety in values
+                const uniqueValues = [...new Set(data.slice(0, 100).map(row => row[key]))];
+                return uniqueValues.length > 1 && uniqueValues.length < 50; // Good for categorical data
+            });
+            
+            console.log('Detected fields:', fields);
+            return fields;
+        }
+        
+        // Auto-generate chart configs for new data
+        function generateChartConfigs(fields) {
+            return fields.slice(0, 6).map((field, index) => ({
+                id: `chart_${index}`,
+                field: field,
+                title: field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+            }));
         }
         
         // Format numbers
@@ -329,33 +458,123 @@
             return data;
         }
         
-        // Update state filter options
-        function updateStateFilter() {
-            const stateFilter = document.getElementById('stateFilter');
-            const states = [...new Set(currentData.map(row => row.state))].sort();
+        // Update filter options
+        function updateFilterOptions() {
+            const filterSelect = document.getElementById('filterFieldSelect');
+            const mainFilter = document.getElementById('mainFilter');
             
-            stateFilter.innerHTML = '<option value="All">All States</option>';
-            states.forEach(state => {
-                if (state) {
-                    const option = document.createElement('option');
-                    option.value = state;
-                    option.textContent = state;
-                    stateFilter.appendChild(option);
-                }
+            // Update customization panel
+            filterSelect.innerHTML = '<option value="">No Filter</option>';
+            availableFields.forEach(field => {
+                const option = document.createElement('option');
+                option.value = field;
+                option.textContent = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                if (field === filterField) option.selected = true;
+                filterSelect.innerHTML += option.outerHTML;
+            });
+            
+            // Update main filter dropdown
+            if (filterField) {
+                const filterValues = [...new Set(currentData.map(row => row[filterField]))].sort();
+                mainFilter.innerHTML = '<option value="All">All</option>';
+                filterValues.forEach(value => {
+                    if (value) {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = value;
+                        mainFilter.appendChild(option);
+                    }
+                });
+                mainFilter.style.display = 'block';
+            } else {
+                mainFilter.style.display = 'none';
+            }
+        }
+        
+        // Update customization panel
+        function updateCustomizationPanel() {
+            const container = document.getElementById('chartConfigs');
+            container.innerHTML = '';
+            
+            chartConfigs.forEach((config, index) => {
+                const div = document.createElement('div');
+                div.className = 'field-config';
+                div.innerHTML = `
+                    <div>
+                        <label>Chart Title:</label>
+                        <input type="text" value="${config.title}" onchange="updateChartConfig(${index}, 'title', this.value)">
+                    </div>
+                    <div>
+                        <label>Data Field:</label>
+                        <select onchange="updateChartConfig(${index}, 'field', this.value)">
+                            ${availableFields.map(field => 
+                                `<option value="${field}" ${field === config.field ? 'selected' : ''}>${field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <button class="btn-small btn-red" onclick="removeChart(${index})">Remove</button>
+                    </div>
+                `;
+                container.appendChild(div);
             });
         }
         
-        // Filter data based on state selection
+        // Update chart config
+        function updateChartConfig(index, property, value) {
+            chartConfigs[index][property] = value;
+            renderCharts();
+        }
+        
+        // Remove chart
+        function removeChart(index) {
+            chartConfigs.splice(index, 1);
+            updateCustomizationPanel();
+            renderCharts();
+        }
+        
+        // Add new chart
+        function addChart() {
+            const newChart = {
+                id: `chart_${Date.now()}`,
+                field: availableFields[0] || '',
+                title: 'New Chart'
+            };
+            chartConfigs.push(newChart);
+            updateCustomizationPanel();
+            renderCharts();
+        }
+        
+        // Filter data based on selection
         function filterData() {
-            const selectedState = document.getElementById('stateFilter').value;
+            const selectedValue = document.getElementById('mainFilter').value;
             
-            if (selectedState === 'All') {
+            if (!filterField || selectedValue === 'All') {
                 filteredData = [...currentData];
             } else {
-                filteredData = currentData.filter(row => row.state === selectedState);
+                filteredData = currentData.filter(row => row[filterField] === selectedValue);
             }
             
             updateDashboard();
+        }
+        
+        // Render all charts
+        function renderCharts() {
+            const container = document.getElementById('chartsContainer');
+            container.innerHTML = '';
+            
+            chartConfigs.forEach(config => {
+                const chartDiv = document.createElement('div');
+                chartDiv.className = 'chart-card';
+                chartDiv.innerHTML = `
+                    <h3 class="chart-title">${config.title}</h3>
+                    <div class="data-list" id="${config.id}"></div>
+                `;
+                container.appendChild(chartDiv);
+                
+                // Populate chart data
+                createDataList(config.id, getFieldCounts(config.field));
+            });
         }
         
         // Get field counts
@@ -414,16 +633,13 @@
             document.getElementById('veterans').textContent = formatNumber(veterans);
             
             // Update charts
-            createDataList('genderChart', getFieldCounts('gender'));
-            createDataList('partyChart', getFieldCounts('party'));
-            createDataList('ageChart', getFieldCounts('age_range'));
-            createDataList('ethnicityChart', getFieldCounts('ethnicity'));
+            renderCharts();
             
             // Update record count
-            const selectedState = document.getElementById('stateFilter').value;
-            const recordText = selectedState === 'All' 
+            const selectedValue = document.getElementById('mainFilter').value;
+            const recordText = (!filterField || selectedValue === 'All') 
                 ? `Showing ${formatNumber(totalVoters)} total records`
-                : `Showing ${formatNumber(totalVoters)} records for ${selectedState}`;
+                : `Showing ${formatNumber(totalVoters)} records for ${selectedValue}`;
             document.getElementById('recordCount').textContent = recordText;
         }
         
@@ -441,8 +657,20 @@
                     if (csvData.length > 0) {
                         currentData = csvData;
                         filteredData = [...currentData];
-                        updateStateFilter();
+                        
+                        // Detect fields and create chart configs
+                        availableFields = detectFields(currentData);
+                        chartConfigs = generateChartConfigs(availableFields);
+                        filterField = null; // Reset filter
+                        
+                        // Update UI
+                        updateFilterOptions();
+                        updateCustomizationPanel();
                         updateDashboard();
+                        
+                        // Show customize button
+                        document.getElementById('customizeBtn').style.display = 'inline-block';
+                        
                         document.getElementById('status').textContent = `Loaded ${formatNumber(csvData.length)} records`;
                     } else {
                         document.getElementById('status').textContent = 'Error: No data found in CSV';
@@ -466,19 +694,43 @@
             
             // Set up event listeners
             document.getElementById('csvFile').addEventListener('change', handleFileUpload);
-            document.getElementById('stateFilter').addEventListener('change', filterData);
+            document.getElementById('mainFilter').addEventListener('change', filterData);
+            document.getElementById('customizeBtn').addEventListener('click', function() {
+                const panel = document.getElementById('customizePanel');
+                panel.classList.toggle('show');
+            });
+            document.getElementById('closeCustomizeBtn').addEventListener('click', function() {
+                document.getElementById('customizePanel').classList.remove('show');
+            });
+            document.getElementById('addChartBtn').addEventListener('click', addChart);
+            document.getElementById('filterFieldSelect').addEventListener('change', function() {
+                filterField = this.value || null;
+                updateFilterOptions();
+                filterData();
+            });
             
             // Load sample data
             currentData = generateSampleData();
             filteredData = [...currentData];
+            availableFields = detectFields(currentData);
+            chartConfigs = getDefaultChartConfigs();
+            filterField = 'state'; // Default to state filter for sample data
             
             // Update UI
-            updateStateFilter();
+            updateFilterOptions();
+            updateCustomizationPanel();
             updateDashboard();
+            
+            // Show customize button
+            document.getElementById('customizeBtn').style.display = 'inline-block';
             
             document.getElementById('status').textContent = 'Ready - Sample data loaded';
             console.log('Dashboard initialized successfully!');
         }
+        
+        // Make functions globally available
+        window.updateChartConfig = updateChartConfig;
+        window.removeChart = removeChart;
         
         // Start the dashboard when page loads
         document.addEventListener('DOMContentLoaded', initDashboard);
