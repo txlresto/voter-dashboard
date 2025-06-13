@@ -65,6 +65,21 @@
             background: #1d4ed8;
         }
         
+        .customize-btn {
+            background: #6b7280;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.2s;
+        }
+        
+        .customize-btn:hover {
+            background: #4b5563;
+        }
+        
         .select {
             padding: 0.5rem 1rem;
             border: 1px solid #d1d5db;
@@ -180,12 +195,6 @@
             border: 1px solid #fecaca;
         }
         
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #6b7280;
-        }
-        
         .footer {
             text-align: center;
             margin-top: 2rem;
@@ -214,7 +223,7 @@
         
         .field-config {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
             margin-bottom: 1rem;
             padding: 1rem;
@@ -281,45 +290,6 @@
             background: #b91c1c;
         }
         
-        .chart-type-visual {
-            display: inline-block;
-            width: 20px;
-            height: 15px;
-            margin-right: 5px;
-            border: 1px solid #d1d5db;
-            background: #f3f4f6;
-        }
-        
-        .chart-type-visual.bar {
-            background: linear-gradient(to top, #2563eb 60%, #f3f4f6 60%);
-        }
-        
-        .chart-type-visual.pie {
-            border-radius: 50%;
-            background: conic-gradient(#2563eb 0deg 120deg, #dc2626 120deg 240deg, #f59e0b 240deg 360deg);
-        }
-        
-        .chart-type-visual.donut {
-            border-radius: 50%;
-            background: conic-gradient(#2563eb 0deg 120deg, #dc2626 120deg 240deg, #f59e0b 240deg 360deg);
-            position: relative;
-        }
-        
-        .chart-type-visual.donut::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-        }
-        
-        .chart-type-visual.list {
-            background: repeating-linear-gradient(to bottom, #2563eb 0px 3px, #f3f4f6 3px 6px);
-        }
-        
         .export-section {
             text-align: center;
             margin: 1rem 0;
@@ -340,12 +310,50 @@
         .btn-export:hover {
             background: #b91c1c;
         }
+        
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 1rem auto;
+            position: relative;
+            background: conic-gradient(#2563eb 0deg 40deg, #dc2626 40deg 80deg, #f59e0b 80deg 120deg, #10b981 120deg 160deg, #8b5cf6 160deg 200deg, #f97316 200deg 360deg);
+        }
+        
+        .donut-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 1rem auto;
+            position: relative;
+            background: conic-gradient(#2563eb 0deg 40deg, #dc2626 40deg 80deg, #f59e0b 80deg 120deg, #10b981 120deg 160deg, #8b5cf6 160deg 200deg, #f97316 200deg 360deg);
+        }
+        
+        .donut-chart::after {
+            content: '';
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 50%;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .smart-filter {
+            background: #f0f9ff;
+            border: 1px solid #0284c7;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">State Breakdown - Voter Demographics</h1>
+            <h1 class="title">Demographic Data Dashboard</h1>
             
             <div class="upload-section">
                 <div class="upload-controls">
@@ -354,33 +362,36 @@
                         <input type="file" accept=".csv" class="hidden" id="csvFile">
                     </label>
                     
-                    <select class="select" id="mainFilter" style="display: none;">
-                        <option value="All">All</option>
-                    </select>
-                    
-                    <button class="upload-btn" id="customizeBtn">
+                    <button class="customize-btn" id="customizeBtn">
                         ⚙️ Customize Charts
                     </button>
+                    
+                    <div id="smartFilter" class="smart-filter hidden">
+                        <label for="mainFilter">Filter by: </label>
+                        <select class="select" id="mainFilter" style="margin-left: 0.5rem;">
+                            <option value="All">All</option>
+                        </select>
+                    </div>
                     
                     <span class="status" id="status">Ready</span>
                 </div>
             </div>
         </div>
-        
-        <!-- Export Section -->
-        <div class="export-section">
-            <button class="btn-export" id="exportBtn">📄 Export Dashboard to PDF</button>
-        </div>
-        
+
         <!-- Customization Panel -->
         <div class="customize-panel" id="customizePanel">
-            <h3 class="customize-title">Customize Charts & Filters</h3>
+            <h3 class="customize-title">Customize Dashboard</h3>
             
             <div id="filterConfig" style="margin-bottom: 1.5rem;">
-                <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Main Filter Field:</label>
+                <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                    Main Filter (optional - choose a field to filter your data by):
+                </label>
                 <select class="select" id="filterFieldSelect">
-                    <option value="">No Filter</option>
+                    <option value="">No Filter Needed</option>
                 </select>
+                <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">
+                    Leave as "No Filter Needed" if your data is for a single location/group
+                </div>
             </div>
             
             <div id="chartConfigs"></div>
@@ -391,26 +402,15 @@
             </div>
         </div>
 
+        <!-- Export Section -->
+        <div class="export-section">
+            <button class="btn-export" id="exportBtn">📄 Export Dashboard to PDF</button>
+        </div>
+
         <div class="summary-grid" id="summaryCards">
             <div class="summary-card">
-                <div class="summary-number blue" id="totalVoters">0</div>
-                <div class="summary-label">Total Voters</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-number green" id="households">0</div>
-                <div class="summary-label">Households</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-number purple" id="cellPhones">0</div>
-                <div class="summary-label">Cell Phones</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-number orange" id="landlines">0</div>
-                <div class="summary-label">Landlines</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-number red" id="veterans">0</div>
-                <div class="summary-label">Veterans</div>
+                <div class="summary-number blue" id="totalRecords">0</div>
+                <div class="summary-label">Total Records</div>
             </div>
         </div>
 
@@ -419,21 +419,31 @@
         </div>
         
         <div class="footer">
-            <p>Dashboard loaded successfully! Upload a CSV file to analyze your own data.</p>
-            <p id="recordCount">Showing 1,000 sample records</p>
+            <p>Dashboard ready! Upload a CSV file to analyze your data.</p>
+            <p id="recordCount">No data loaded</p>
         </div>
     </div>
 
     <script>
-        // Global variables
+        // Global variables - Reset on each page load to prevent accumulation
         let currentData = [];
         let filteredData = [];
         let availableFields = [];
         let chartConfigs = [];
         let filterField = null;
-        
-        // Initialize with sample data
+        let isInitialized = false;
+
+        // Chart type options
+        const chartTypes = [
+            { value: 'bar', label: '📊 Bar Chart' },
+            { value: 'pie', label: '🥧 Pie Chart' },
+            { value: 'donut', label: '🍩 Donut Chart' },
+            { value: 'list', label: '📋 Top List' }
+        ];
+
+        // Generate sample data only once
         function generateSampleData() {
+            console.log('Generating fresh sample data...');
             const data = [];
             const states = ['AZ', 'VA', 'TX', 'FL', 'CA'];
             const genders = ['F', 'M'];
@@ -441,10 +451,10 @@
             const parties = ['Republican', 'Democratic', 'Non-Partisan'];
             const ethnicities = ['White Self Reported', 'Hispanic', 'African American', 'Asian', 'Other'];
 
-            console.log('Generating sample data...');
-            
             for (let i = 0; i < 1000; i++) {
                 data.push({
+                    voter_id: `ID_${1000000 + i}`, // Unique ID field
+                    household_id: `HH_${Math.floor(i / 2.3)}`, // Another unique ID
                     state: states[i % states.length],
                     gender: genders[i % genders.length],
                     age_range: ageRanges[i % ageRanges.length],
@@ -457,60 +467,17 @@
                 });
             }
             
-            console.log('Sample data generated:', data.length, 'records');
             return data;
         }
-        
-        // Default chart configurations for sample data
-        function getDefaultChartConfigs() {
-            return [
-                { id: 'gender', field: 'gender', title: 'Gender Distribution', type: 'donut' },
-                { id: 'party', field: 'party', title: 'Party Affiliation', type: 'bar' },
-                { id: 'age', field: 'age_range', title: 'Age Distribution', type: 'bar' },
-                { id: 'ethnicity', field: 'ethnicity', title: 'Ethnicity Distribution', type: 'bar' }
-            ];
-        }
-        
-        // Chart type options
-        const chartTypes = [
-            { value: 'bar', label: 'Bar Chart', visual: 'bar' },
-            { value: 'pie', label: 'Pie Chart', visual: 'pie' },
-            { value: 'donut', label: 'Donut Chart', visual: 'donut' },
-            { value: 'list', label: 'Top List', visual: 'list' }
-        ];
-        
-        // Detect available fields from data
-        function detectFields(data) {
-            if (!data || data.length === 0) return [];
-            
-            const fields = Object.keys(data[0]).filter(key => {
-                // Only include fields that have some variety in values
-                const uniqueValues = [...new Set(data.slice(0, 100).map(row => row[key]))];
-                return uniqueValues.length > 1 && uniqueValues.length < 50; // Good for categorical data
-            });
-            
-            console.log('Detected fields:', fields);
-            return fields;
-        }
-        
-        // Auto-generate chart configs for new data
-        function generateChartConfigs(fields) {
-            return fields.slice(0, 6).map((field, index) => ({
-                id: `chart_${index}`,
-                field: field,
-                title: field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                type: index === 0 ? 'donut' : 'bar' // First chart as donut, rest as bars
-            }));
-        }
-        
+
         // Format numbers
         function formatNumber(num) {
             if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
             if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
             return num.toString();
         }
-        
-        // Parse CSV manually (simple parser)
+
+        // Parse CSV manually
         function parseCSV(text) {
             const lines = text.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
@@ -531,17 +498,88 @@
             
             return data;
         }
-        
-        // Update filter options
+
+        // Detect ALL fields including IDs - improved logic
+        function detectAllFields(data) {
+            if (!data || data.length === 0) return { categorical: [], numeric: [], ids: [] };
+            
+            const allFields = Object.keys(data[0]);
+            const categorical = [];
+            const numeric = [];
+            const ids = [];
+            
+            allFields.forEach(field => {
+                const sampleValues = data.slice(0, Math.min(100, data.length)).map(row => row[field]);
+                const uniqueValues = new Set(sampleValues.filter(v => v !== null && v !== undefined && v !== ''));
+                const uniqueCount = uniqueValues.size;
+                const totalCount = sampleValues.length;
+                
+                // Check if it's an ID field (high uniqueness)
+                const uniquenessRatio = uniqueCount / totalCount;
+                if (uniquenessRatio > 0.8 || field.toLowerCase().includes('id')) {
+                    ids.push(field);
+                }
+                // Check if it's numeric
+                else if (sampleValues.every(v => !isNaN(parseFloat(v)) && isFinite(v))) {
+                    numeric.push(field);
+                }
+                // Check if it's good for categorical visualization (2-50 unique values)
+                else if (uniqueCount >= 2 && uniqueCount <= 50) {
+                    categorical.push(field);
+                }
+            });
+            
+            console.log('Field detection results:', { categorical, numeric, ids });
+            return { categorical, numeric, ids };
+        }
+
+        // Generate default chart configs
+        function generateDefaultChartConfigs(categoricalFields) {
+            return categoricalFields.slice(0, 6).map((field, index) => ({
+                id: `chart_${index}`,
+                field: field,
+                title: field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                type: index === 0 ? 'donut' : 'bar'
+            }));
+        }
+
+        // Smart filter detection - find best field for filtering
+        function detectBestFilterField(categoricalFields, data) {
+            if (categoricalFields.length === 0) return null;
+            
+            // Look for common geographic/organizational fields first
+            const priorityFields = ['state', 'county', 'district', 'region', 'city', 'location'];
+            
+            for (const priority of priorityFields) {
+                const field = categoricalFields.find(f => f.toLowerCase().includes(priority));
+                if (field) {
+                    const uniqueValues = new Set(data.map(row => row[field]));
+                    // Only suggest if it has 2-20 unique values (good for filtering)
+                    if (uniqueValues.size >= 2 && uniqueValues.size <= 20) {
+                        return field;
+                    }
+                }
+            }
+            
+            // Fallback: find field with good filtering potential
+            for (const field of categoricalFields) {
+                const uniqueValues = new Set(data.map(row => row[field]));
+                if (uniqueValues.size >= 2 && uniqueValues.size <= 10) {
+                    return field;
+                }
+            }
+            
+            return null;
+        }
+
+        // Update filter options and smart suggestions
         function updateFilterOptions() {
             const filterSelect = document.getElementById('filterFieldSelect');
             const mainFilter = document.getElementById('mainFilter');
-            
-            console.log('Updating filter options. Current filterField:', filterField);
-            console.log('Available fields:', availableFields);
+            const smartFilterDiv = document.getElementById('smartFilter');
             
             // Update customization panel
-            filterSelect.innerHTML = '<option value="">No Filter</option>';
+            filterSelect.innerHTML = '<option value="">No Filter Needed</option>';
             availableFields.forEach(field => {
                 const option = document.createElement('option');
                 option.value = field;
@@ -562,14 +600,12 @@
                         mainFilter.appendChild(option);
                     }
                 });
-                mainFilter.style.display = 'inline-block';
-                console.log('Filter dropdown shown with', filterValues.length, 'options');
+                smartFilterDiv.classList.remove('hidden');
             } else {
-                mainFilter.style.display = 'none';
-                console.log('Filter dropdown hidden');
+                smartFilterDiv.classList.add('hidden');
             }
         }
-        
+
         // Update customization panel
         function updateCustomizationPanel() {
             const container = document.getElementById('chartConfigs');
@@ -595,9 +631,7 @@
                         <label>Chart Type:</label>
                         <select onchange="updateChartConfig(${index}, 'type', this.value)">
                             ${chartTypes.map(type => 
-                                `<option value="${type.value}" ${type.value === (config.type || 'bar') ? 'selected' : ''}>
-                                    <span class="chart-type-visual ${type.visual}"></span>${type.label}
-                                </option>`
+                                `<option value="${type.value}" ${type.value === (config.type || 'bar') ? 'selected' : ''}>${type.label}</option>`
                             ).join('')}
                         </select>
                     </div>
@@ -608,20 +642,20 @@
                 container.appendChild(div);
             });
         }
-        
+
         // Update chart config
         function updateChartConfig(index, property, value) {
             chartConfigs[index][property] = value;
             renderCharts();
         }
-        
+
         // Remove chart
         function removeChart(index) {
             chartConfigs.splice(index, 1);
             updateCustomizationPanel();
             renderCharts();
         }
-        
+
         // Add new chart
         function addChart() {
             const newChart = {
@@ -634,8 +668,8 @@
             updateCustomizationPanel();
             renderCharts();
         }
-        
-        // Filter data based on selection
+
+        // Filter data
         function filterData() {
             const selectedValue = document.getElementById('mainFilter').value;
             
@@ -647,113 +681,7 @@
             
             updateDashboard();
         }
-        
-        // Render all charts
-        function renderCharts() {
-            const container = document.getElementById('chartsContainer');
-            container.innerHTML = '';
-            
-            chartConfigs.forEach(config => {
-                const chartDiv = document.createElement('div');
-                chartDiv.className = 'chart-card';
-                chartDiv.innerHTML = `
-                    <h3 class="chart-title">${config.title}</h3>
-                    <div class="chart-content" id="${config.id}"></div>
-                `;
-                container.appendChild(chartDiv);
-                
-                // Populate chart data with type
-                const chartData = getFieldCounts(config.field);
-                createDataList(config.id, chartData, config.type || 'bar');
-            });
-        }
-        
-        // Export to PDF function
-        function exportToPDF() {
-            const button = document.getElementById('exportBtn');
-            button.textContent = '📄 Generating PDF...';
-            button.disabled = true;
-            
-            // Create a new window for printing
-            const printWindow = window.open('', '_blank');
-            const currentDate = new Date().toLocaleDateString();
-            const recordCount = formatNumber(filteredData.length);
-            
-            // Get current dashboard content
-            const summaryCards = document.getElementById('summaryCards').innerHTML;
-            const chartsContainer = document.getElementById('chartsContainer').innerHTML;
-            
-            const printContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Voter Demographics Dashboard - ${currentDate}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-                        .title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-                        .subtitle { color: #666; margin-bottom: 10px; }
-                        .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 30px; }
-                        .summary-card { border: 1px solid #ddd; padding: 15px; text-align: center; border-radius: 5px; }
-                        .summary-number { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-                        .summary-label { font-size: 12px; color: #666; }
-                        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-                        .chart-card { border: 1px solid #ddd; padding: 15px; border-radius: 5px; break-inside: avoid; }
-                        .chart-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
-                        .data-list { display: flex; flex-direction: column; gap: 5px; }
-                        .data-item { display: flex; justify-content: space-between; padding: 8px; background: #f9f9f9; border-radius: 3px; }
-                        .data-name { font-weight: 500; }
-                        .data-stats { text-align: right; }
-                        .data-count { font-weight: 600; }
-                        .data-percent { font-size: 11px; color: #666; }
-                        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
-                        .blue { color: #2563eb; }
-                        .green { color: #059669; }
-                        .purple { color: #7c3aed; }
-                        .orange { color: #ea580c; }
-                        .red { color: #dc2626; }
-                        @media print {
-                            body { margin: 0; }
-                            .chart-card { page-break-inside: avoid; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <div class="title">State Breakdown - Voter Demographics</div>
-                        <div class="subtitle">Dashboard Report - ${currentDate}</div>
-                        <div class="subtitle">Total Records: ${recordCount}</div>
-                    </div>
-                    
-                    <div class="summary-grid">
-                        ${summaryCards}
-                    </div>
-                    
-                    <div class="charts-grid">
-                        ${chartsContainer}
-                    </div>
-                    
-                    <div class="footer">
-                        <p>Generated from Voter Demographics Dashboard</p>
-                        <p>Report created on ${currentDate}</p>
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            printWindow.document.write(printContent);
-            printWindow.document.close();
-            
-            // Auto-print after a short delay
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-                
-                button.textContent = '📄 Export Dashboard to PDF';
-                button.disabled = false;
-            }, 1000);
-        }
-        
+
         // Get field counts
         function getFieldCounts(field) {
             const counts = {};
@@ -768,7 +696,7 @@
                 .map(([name, count]) => ({ name, count }))
                 .sort((a, b) => b.count - a.count);
         }
-        
+
         // Create data visualization
         function createDataList(containerId, data, chartType = 'bar') {
             const container = document.getElementById(containerId);
@@ -777,53 +705,8 @@
             container.innerHTML = '';
             
             if (chartType === 'pie' || chartType === 'donut') {
-                // Create pie/donut chart with CSS
                 const chartDiv = document.createElement('div');
-                chartDiv.style.cssText = `
-                    width: 200px;
-                    height: 200px;
-                    border-radius: 50%;
-                    margin: 0 auto 1rem auto;
-                    position: relative;
-                `;
-                
-                const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
-                let currentAngle = 0;
-                
-                data.slice(0, 6).forEach((item, index) => {
-                    const percentage = total > 0 ? (item.count / total) * 100 : 0;
-                    const angle = (percentage / 100) * 360;
-                    
-                    const slice = document.createElement('div');
-                    slice.style.cssText = `
-                        position: absolute;
-                        width: 50%;
-                        height: 50%;
-                        top: 50%;
-                        left: 50%;
-                        transform-origin: 0 0;
-                        transform: rotate(${currentAngle}deg);
-                        background: conic-gradient(${colors[index]} 0deg ${angle}deg, transparent ${angle}deg 360deg);
-                        clip-path: polygon(0 0, 100% 0, 50% 100%);
-                    `;
-                    chartDiv.appendChild(slice);
-                    currentAngle += angle;
-                });
-                
-                if (chartType === 'donut') {
-                    const innerCircle = document.createElement('div');
-                    innerCircle.style.cssText = `
-                        position: absolute;
-                        top: 25%;
-                        left: 25%;
-                        width: 50%;
-                        height: 50%;
-                        background: white;
-                        border-radius: 50%;
-                    `;
-                    chartDiv.appendChild(innerCircle);
-                }
-                
+                chartDiv.className = chartType === 'pie' ? 'pie-chart' : 'donut-chart';
                 container.appendChild(chartDiv);
             }
             
@@ -852,35 +735,41 @@
             
             container.appendChild(listDiv);
         }
-        
-        // Update all dashboard components
+
+        // Render all charts
+        function renderCharts() {
+            const container = document.getElementById('chartsContainer');
+            container.innerHTML = '';
+            
+            chartConfigs.forEach(config => {
+                const chartDiv = document.createElement('div');
+                chartDiv.className = 'chart-card';
+                chartDiv.innerHTML = `
+                    <h3 class="chart-title">${config.title}</h3>
+                    <div class="chart-content" id="${config.id}"></div>
+                `;
+                container.appendChild(chartDiv);
+                
+                const chartData = getFieldCounts(config.field);
+                createDataList(config.id, chartData, config.type || 'bar');
+            });
+        }
+
+        // Update dashboard
         function updateDashboard() {
-            console.log('Updating dashboard with', filteredData.length, 'records');
+            const totalRecords = filteredData.length;
             
-            // Update summary cards
-            const totalVoters = filteredData.length;
-            const households = filteredData.filter(row => row.household === 'Yes').length;
-            const cellPhones = filteredData.filter(row => row.cell_phone === 'Yes').length;
-            const landlines = filteredData.filter(row => row.landline === 'Yes').length;
-            const veterans = filteredData.filter(row => row.veteran === 'Yes').length;
+            document.getElementById('totalRecords').textContent = formatNumber(totalRecords);
             
-            document.getElementById('totalVoters').textContent = formatNumber(totalVoters);
-            document.getElementById('households').textContent = formatNumber(households);
-            document.getElementById('cellPhones').textContent = formatNumber(cellPhones);
-            document.getElementById('landlines').textContent = formatNumber(landlines);
-            document.getElementById('veterans').textContent = formatNumber(veterans);
-            
-            // Update charts
             renderCharts();
             
-            // Update record count
             const selectedValue = document.getElementById('mainFilter').value;
             const recordText = (!filterField || selectedValue === 'All') 
-                ? `Showing ${formatNumber(totalVoters)} total records`
-                : `Showing ${formatNumber(totalVoters)} records for ${selectedValue}`;
+                ? `Showing ${formatNumber(totalRecords)} total records`
+                : `Showing ${formatNumber(totalRecords)} records for ${selectedValue}`;
             document.getElementById('recordCount').textContent = recordText;
         }
-        
+
         // Handle file upload
         function handleFileUpload(event) {
             const file = event.target.files[0];
@@ -893,31 +782,39 @@
                 try {
                     const csvData = parseCSV(e.target.result);
                     if (csvData.length > 0) {
-                        console.log('CSV loaded successfully:', csvData.length, 'records');
-                        
+                        // Reset everything
                         currentData = csvData;
                         filteredData = [...currentData];
                         
-                        // Detect fields and create chart configs
-                        availableFields = detectFields(currentData);
-                        chartConfigs = generateChartConfigs(availableFields);
-                        filterField = null; // Reset filter
+                        // Detect all field types
+                        const fieldTypes = detectAllFields(currentData);
+                        availableFields = fieldTypes.categorical;
                         
-                        console.log('Available fields detected:', availableFields);
-                        console.log('Chart configs generated:', chartConfigs.length);
+                        // Generate chart configs
+                        chartConfigs = generateDefaultChartConfigs(availableFields);
+                        
+                        // Smart filter suggestion
+                        const suggestedFilter = detectBestFilterField(availableFields, currentData);
+                        filterField = suggestedFilter;
                         
                         // Update UI
                         updateFilterOptions();
                         updateCustomizationPanel();
                         updateDashboard();
                         
-                        // Show customize button
-                        const customizeBtn = document.getElementById('customizeBtn');
-                        customizeBtn.style.display = 'inline-block';
-                        customizeBtn.style.background = '#6b7280';
-                        console.log('Customize button should now be visible');
+                        const statusMsg = suggestedFilter 
+                            ? `Loaded ${formatNumber(csvData.length)} records - Smart filter: ${suggestedFilter}`
+                            : `Loaded ${formatNumber(csvData.length)} records - No filtering needed`;
+                        document.getElementById('status').textContent = statusMsg;
                         
-                        document.getElementById('status').textContent = `Loaded ${formatNumber(csvData.length)} records - Click Customize Charts to configure`;
+                        console.log('File loaded successfully:', {
+                            records: csvData.length,
+                            categoricalFields: fieldTypes.categorical,
+                            numericFields: fieldTypes.numeric,
+                            idFields: fieldTypes.ids,
+                            suggestedFilter
+                        });
+                        
                     } else {
                         document.getElementById('status').textContent = 'Error: No data found in CSV';
                     }
@@ -933,19 +830,93 @@
             
             reader.readAsText(file);
         }
-        
+
+        // Export to PDF
+        function exportToPDF() {
+            const button = document.getElementById('exportBtn');
+            button.textContent = '📄 Generating PDF...';
+            button.disabled = true;
+            
+            const printWindow = window.open('', '_blank');
+            const currentDate = new Date().toLocaleDateString();
+            const recordCount = formatNumber(filteredData.length);
+            
+            const summaryCards = document.getElementById('summaryCards').innerHTML;
+            const chartsContainer = document.getElementById('chartsContainer').innerHTML;
+            
+            const printContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Demographics Dashboard - ${currentDate}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+                        .title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+                        .subtitle { color: #666; margin-bottom: 10px; }
+                        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+                        .summary-card { border: 1px solid #ddd; padding: 15px; text-align: center; border-radius: 5px; }
+                        .summary-number { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+                        .summary-label { font-size: 12px; color: #666; }
+                        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+                        .chart-card { border: 1px solid #ddd; padding: 15px; border-radius: 5px; break-inside: avoid; }
+                        .chart-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+                        .data-list { display: flex; flex-direction: column; gap: 5px; }
+                        .data-item { display: flex; justify-content: space-between; padding: 8px; background: #f9f9f9; border-radius: 3px; }
+                        .data-name { font-weight: 500; }
+                        .data-stats { text-align: right; }
+                        .data-count { font-weight: 600; }
+                        .data-percent { font-size: 11px; color: #666; }
+                        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
+                        .blue { color: #2563eb; }
+                        .green { color: #059669; }
+                        .purple { color: #7c3aed; }
+                        .orange { color: #ea580c; }
+                        .red { color: #dc2626; }
+                        @media print { body { margin: 0; } .chart-card { page-break-inside: avoid; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="title">Demographics Dashboard</div>
+                        <div class="subtitle">Report Generated - ${currentDate}</div>
+                        <div class="subtitle">Total Records: ${recordCount}</div>
+                    </div>
+                    
+                    <div class="summary-grid">${summaryCards}</div>
+                    <div class="charts-grid">${chartsContainer}</div>
+                    
+                    <div class="footer">
+                        <p>Generated from Demographics Dashboard</p>
+                        <p>Report created on ${currentDate}</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+                button.textContent = '📄 Export Dashboard to PDF';
+                button.disabled = false;
+            }, 1000);
+        }
+
         // Initialize dashboard
         function initDashboard() {
+            if (isInitialized) return; // Prevent double initialization
+            
             console.log('Initializing dashboard...');
             
             // Set up event listeners
             document.getElementById('csvFile').addEventListener('change', handleFileUpload);
             document.getElementById('mainFilter').addEventListener('change', filterData);
             document.getElementById('customizeBtn').addEventListener('click', function() {
-                console.log('Customize button clicked!');
                 const panel = document.getElementById('customizePanel');
                 panel.classList.toggle('show');
-                console.log('Panel visibility toggled. Is visible:', panel.classList.contains('show'));
             });
             document.getElementById('closeCustomizeBtn').addEventListener('click', function() {
                 document.getElementById('customizePanel').classList.remove('show');
@@ -958,27 +929,24 @@
             });
             document.getElementById('exportBtn').addEventListener('click', exportToPDF);
             
-            // Load sample data
+            // Load sample data only once
             currentData = generateSampleData();
             filteredData = [...currentData];
-            availableFields = detectFields(currentData);
-            chartConfigs = getDefaultChartConfigs();
-            filterField = 'state'; // Default to state filter for sample data
             
-            // Update UI
+            const fieldTypes = detectAllFields(currentData);
+            availableFields = fieldTypes.categorical;
+            chartConfigs = generateDefaultChartConfigs(availableFields);
+            filterField = 'state'; // Default for sample data
+            
             updateFilterOptions();
             updateCustomizationPanel();
             updateDashboard();
             
-            // Make sure customize button is visible
-            const customizeBtn = document.getElementById('customizeBtn');
-            customizeBtn.style.display = 'inline-block';
-            customizeBtn.style.background = '#6b7280';
-            
             document.getElementById('status').textContent = 'Ready - Sample data loaded';
+            isInitialized = true;
             console.log('Dashboard initialized successfully!');
         }
-        
+
         // Make functions globally available
         window.updateChartConfig = updateChartConfig;
         window.removeChart = removeChart;
