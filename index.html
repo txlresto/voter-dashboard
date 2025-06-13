@@ -88,12 +88,6 @@
             font-size: 0.875rem;
         }
         
-        .select:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        
         .hidden {
             display: none;
         }
@@ -134,6 +128,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 1.5rem;
+            margin-bottom: 2rem;
         }
         
         .chart-card {
@@ -141,65 +136,160 @@
             padding: 1.5rem;
             border-radius: 0.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-height: 300px;
         }
         
         .chart-title {
             font-size: 1.125rem;
             font-weight: 600;
             margin-bottom: 1rem;
+            text-align: center;
         }
         
-        .data-list {
+        .chart-content {
+            height: 100%;
             display: flex;
             flex-direction: column;
+        }
+        
+        .bar-chart {
+            flex: 1;
+        }
+        
+        .bar-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background: #f9fafb;
+            border-radius: 0.25rem;
+        }
+        
+        .bar-label {
+            width: 120px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+        
+        .bar-visual {
+            flex: 1;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-right: 0.5rem;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: #2563eb;
+            transition: width 0.3s ease;
+        }
+        
+        .bar-value {
+            width: 60px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .pie-chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .pie-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 0.5rem;
         }
         
-        .data-item {
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .donut-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .donut-inner {
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 50%;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #6b7280;
+        }
+        
+        .list-chart {
+            flex: 1;
+        }
+        
+        .list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem;
+            margin-bottom: 0.5rem;
             background: #f9fafb;
             border-radius: 0.375rem;
+            border-left: 4px solid #2563eb;
         }
         
-        .data-name {
+        .list-rank {
+            font-weight: bold;
+            color: #6b7280;
+            margin-right: 0.5rem;
+        }
+        
+        .list-name {
+            flex: 1;
             font-weight: 500;
         }
         
-        .data-stats {
+        .list-stats {
             text-align: right;
         }
         
-        .data-count {
+        .list-count {
             font-weight: 600;
             color: #111827;
         }
         
-        .data-percent {
+        .list-percent {
             font-size: 0.75rem;
             color: #6b7280;
-        }
-        
-        .status {
-            color: #2563eb;
-            font-weight: 500;
-        }
-        
-        .error {
-            color: #dc2626;
-            background: #fef2f2;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #fecaca;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            color: #6b7280;
-            font-size: 0.875rem;
         }
         
         .customize-panel {
@@ -311,35 +401,6 @@
             background: #b91c1c;
         }
         
-        .pie-chart {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 0 auto 1rem auto;
-            position: relative;
-            background: conic-gradient(#2563eb 0deg 40deg, #dc2626 40deg 80deg, #f59e0b 80deg 120deg, #10b981 120deg 160deg, #8b5cf6 160deg 200deg, #f97316 200deg 360deg);
-        }
-        
-        .donut-chart {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 0 auto 1rem auto;
-            position: relative;
-            background: conic-gradient(#2563eb 0deg 40deg, #dc2626 40deg 80deg, #f59e0b 80deg 120deg, #10b981 120deg 160deg, #8b5cf6 160deg 200deg, #f97316 200deg 360deg);
-        }
-        
-        .donut-chart::after {
-            content: '';
-            position: absolute;
-            top: 25%;
-            left: 25%;
-            width: 50%;
-            height: 50%;
-            background: white;
-            border-radius: 50%;
-        }
-        
         .smart-filter {
             background: #f0f9ff;
             border: 1px solid #0284c7;
@@ -347,6 +408,18 @@
             padding: 0.75rem;
             margin-bottom: 1rem;
             font-size: 0.875rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .status {
+            color: #2563eb;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -425,7 +498,7 @@
     </div>
 
     <script>
-        // Global variables - Reset on each page load to prevent accumulation
+        // Global variables
         let currentData = [];
         let filteredData = [];
         let availableFields = [];
@@ -441,20 +514,18 @@
             { value: 'list', label: '📋 Top List' }
         ];
 
-        // Generate sample data only once
+        // Generate sample data
         function generateSampleData() {
-            console.log('Generating fresh sample data...');
             const data = [];
             const states = ['AZ', 'VA', 'TX', 'FL', 'CA'];
-            const genders = ['F', 'M'];
+            const genders = ['Female', 'Male'];
             const ageRanges = ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'];
             const parties = ['Republican', 'Democratic', 'Non-Partisan'];
-            const ethnicities = ['White Self Reported', 'Hispanic', 'African American', 'Asian', 'Other'];
+            const ethnicities = ['White', 'Hispanic', 'African American', 'Asian', 'Other'];
 
             for (let i = 0; i < 1000; i++) {
                 data.push({
-                    voter_id: `ID_${1000000 + i}`, // Unique ID field
-                    household_id: `HH_${Math.floor(i / 2.3)}`, // Another unique ID
+                    voter_id: `ID_${1000000 + i}`,
                     state: states[i % states.length],
                     gender: genders[i % genders.length],
                     age_range: ageRanges[i % ageRanges.length],
@@ -477,7 +548,7 @@
             return num.toString();
         }
 
-        // Parse CSV manually
+        // Parse CSV
         function parseCSV(text) {
             const lines = text.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
@@ -499,14 +570,12 @@
             return data;
         }
 
-        // Detect ALL fields including IDs - improved logic
-        function detectAllFields(data) {
-            if (!data || data.length === 0) return { categorical: [], numeric: [], ids: [] };
+        // Detect fields for visualization
+        function detectCategoricalFields(data) {
+            if (!data || data.length === 0) return [];
             
             const allFields = Object.keys(data[0]);
             const categorical = [];
-            const numeric = [];
-            const ids = [];
             
             allFields.forEach(field => {
                 const sampleValues = data.slice(0, Math.min(100, data.length)).map(row => row[field]);
@@ -514,28 +583,19 @@
                 const uniqueCount = uniqueValues.size;
                 const totalCount = sampleValues.length;
                 
-                // Check if it's an ID field (high uniqueness)
+                // Good for categorical visualization (2-50 unique values, not too unique)
                 const uniquenessRatio = uniqueCount / totalCount;
-                if (uniquenessRatio > 0.8 || field.toLowerCase().includes('id')) {
-                    ids.push(field);
-                }
-                // Check if it's numeric
-                else if (sampleValues.every(v => !isNaN(parseFloat(v)) && isFinite(v))) {
-                    numeric.push(field);
-                }
-                // Check if it's good for categorical visualization (2-50 unique values)
-                else if (uniqueCount >= 2 && uniqueCount <= 50) {
+                if (uniqueCount >= 2 && uniqueCount <= 50 && uniquenessRatio < 0.8) {
                     categorical.push(field);
                 }
             });
             
-            console.log('Field detection results:', { categorical, numeric, ids });
-            return { categorical, numeric, ids };
+            return categorical;
         }
 
         // Generate default chart configs
-        function generateDefaultChartConfigs(categoricalFields) {
-            return categoricalFields.slice(0, 6).map((field, index) => ({
+        function generateDefaultChartConfigs(fields) {
+            return fields.slice(0, 6).map((field, index) => ({
                 id: `chart_${index}`,
                 field: field,
                 title: field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
@@ -543,67 +603,211 @@
             }));
         }
 
-        // Smart filter detection - find best field for filtering
-        function detectBestFilterField(categoricalFields, data) {
-            if (categoricalFields.length === 0) return null;
+        // Get field counts
+        function getFieldCounts(field) {
+            if (!field) return [];
             
-            // Look for common geographic/organizational fields first
-            const priorityFields = ['state', 'county', 'district', 'region', 'city', 'location'];
-            
-            for (const priority of priorityFields) {
-                const field = categoricalFields.find(f => f.toLowerCase().includes(priority));
-                if (field) {
-                    const uniqueValues = new Set(data.map(row => row[field]));
-                    // Only suggest if it has 2-20 unique values (good for filtering)
-                    if (uniqueValues.size >= 2 && uniqueValues.size <= 20) {
-                        return field;
-                    }
+            const counts = {};
+            filteredData.forEach(row => {
+                const value = row[field];
+                if (value && value !== '') {
+                    counts[value] = (counts[value] || 0) + 1;
                 }
-            }
-            
-            // Fallback: find field with good filtering potential
-            for (const field of categoricalFields) {
-                const uniqueValues = new Set(data.map(row => row[field]));
-                if (uniqueValues.size >= 2 && uniqueValues.size <= 10) {
-                    return field;
-                }
-            }
-            
-            return null;
-        }
-
-        // Update filter options and smart suggestions
-        function updateFilterOptions() {
-            const filterSelect = document.getElementById('filterFieldSelect');
-            const mainFilter = document.getElementById('mainFilter');
-            const smartFilterDiv = document.getElementById('smartFilter');
-            
-            // Update customization panel
-            filterSelect.innerHTML = '<option value="">No Filter Needed</option>';
-            availableFields.forEach(field => {
-                const option = document.createElement('option');
-                option.value = field;
-                option.textContent = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                if (field === filterField) option.selected = true;
-                filterSelect.appendChild(option);
             });
             
-            // Update main filter dropdown
-            if (filterField && availableFields.includes(filterField)) {
-                const filterValues = [...new Set(currentData.map(row => row[filterField]))].sort();
-                mainFilter.innerHTML = '<option value="All">All</option>';
-                filterValues.forEach(value => {
-                    if (value) {
-                        const option = document.createElement('option');
-                        option.value = value;
-                        option.textContent = value;
-                        mainFilter.appendChild(option);
-                    }
-                });
-                smartFilterDiv.classList.remove('hidden');
-            } else {
-                smartFilterDiv.classList.add('hidden');
-            }
+            return Object.entries(counts)
+                .map(([name, count]) => ({ name, count }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 10); // Limit to top 10
+        }
+
+        // Create bar chart
+        function createBarChart(container, data) {
+            const maxValue = Math.max(...data.map(d => d.count));
+            const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
+            
+            container.innerHTML = '';
+            const chartDiv = document.createElement('div');
+            chartDiv.className = 'bar-chart';
+            
+            data.forEach((item, index) => {
+                const percentage = maxValue > 0 ? (item.count / maxValue) * 100 : 0;
+                const barItem = document.createElement('div');
+                barItem.className = 'bar-item';
+                barItem.innerHTML = `
+                    <div class="bar-label">${item.name}</div>
+                    <div class="bar-visual">
+                        <div class="bar-fill" style="width: ${percentage}%; background: ${colors[index % colors.length]};"></div>
+                    </div>
+                    <div class="bar-value">${formatNumber(item.count)}</div>
+                `;
+                chartDiv.appendChild(barItem);
+            });
+            
+            container.appendChild(chartDiv);
+        }
+
+        // Create pie chart
+        function createPieChart(container, data) {
+            const total = data.reduce((sum, item) => sum + item.count, 0);
+            const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
+            
+            container.innerHTML = '';
+            const pieContainer = document.createElement('div');
+            pieContainer.className = 'pie-chart-container';
+            
+            // Create pie chart
+            const pieChart = document.createElement('div');
+            pieChart.className = 'pie-chart';
+            
+            let currentAngle = 0;
+            const gradients = [];
+            
+            data.forEach((item, index) => {
+                const percentage = total > 0 ? (item.count / total) * 100 : 0;
+                const angle = (percentage / 100) * 360;
+                
+                gradients.push(`${colors[index % colors.length]} ${currentAngle}deg ${currentAngle + angle}deg`);
+                currentAngle += angle;
+            });
+            
+            pieChart.style.background = `conic-gradient(${gradients.join(', ')})`;
+            pieContainer.appendChild(pieChart);
+            
+            // Create legend
+            const legend = document.createElement('div');
+            legend.className = 'pie-legend';
+            
+            data.forEach((item, index) => {
+                const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+                legendItem.innerHTML = `
+                    <div class="legend-color" style="background: ${colors[index % colors.length]};"></div>
+                    <span>${item.name}: ${percentage}%</span>
+                `;
+                legend.appendChild(legendItem);
+            });
+            
+            pieContainer.appendChild(legend);
+            container.appendChild(pieContainer);
+        }
+
+        // Create donut chart
+        function createDonutChart(container, data) {
+            const total = data.reduce((sum, item) => sum + item.count, 0);
+            const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
+            
+            container.innerHTML = '';
+            const donutContainer = document.createElement('div');
+            donutContainer.className = 'pie-chart-container';
+            
+            // Create donut chart
+            const donutChart = document.createElement('div');
+            donutChart.className = 'donut-chart';
+            
+            let currentAngle = 0;
+            const gradients = [];
+            
+            data.forEach((item, index) => {
+                const percentage = total > 0 ? (item.count / total) * 100 : 0;
+                const angle = (percentage / 100) * 360;
+                
+                gradients.push(`${colors[index % colors.length]} ${currentAngle}deg ${currentAngle + angle}deg`);
+                currentAngle += angle;
+            });
+            
+            donutChart.style.background = `conic-gradient(${gradients.join(', ')})`;
+            
+            // Add inner circle with total
+            const innerCircle = document.createElement('div');
+            innerCircle.className = 'donut-inner';
+            innerCircle.textContent = formatNumber(total);
+            donutChart.appendChild(innerCircle);
+            
+            donutContainer.appendChild(donutChart);
+            
+            // Create legend
+            const legend = document.createElement('div');
+            legend.className = 'pie-legend';
+            
+            data.forEach((item, index) => {
+                const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+                legendItem.innerHTML = `
+                    <div class="legend-color" style="background: ${colors[index % colors.length]};"></div>
+                    <span>${item.name}: ${percentage}%</span>
+                `;
+                legend.appendChild(legendItem);
+            });
+            
+            donutContainer.appendChild(legend);
+            container.appendChild(donutContainer);
+        }
+
+        // Create list chart
+        function createListChart(container, data) {
+            const total = filteredData.length;
+            const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
+            
+            container.innerHTML = '';
+            const listDiv = document.createElement('div');
+            listDiv.className = 'list-chart';
+            
+            data.forEach((item, index) => {
+                const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
+                const listItem = document.createElement('div');
+                listItem.className = 'list-item';
+                listItem.style.borderLeftColor = colors[index % colors.length];
+                listItem.innerHTML = `
+                    <span class="list-rank">${index + 1}.</span>
+                    <span class="list-name">${item.name}</span>
+                    <div class="list-stats">
+                        <div class="list-count">${formatNumber(item.count)}</div>
+                        <div class="list-percent">${percentage}%</div>
+                    </div>
+                `;
+                listDiv.appendChild(listItem);
+            });
+            
+            container.appendChild(listDiv);
+        }
+
+        // Render charts
+        function renderCharts() {
+            const container = document.getElementById('chartsContainer');
+            container.innerHTML = '';
+            
+            chartConfigs.forEach(config => {
+                const chartDiv = document.createElement('div');
+                chartDiv.className = 'chart-card';
+                chartDiv.innerHTML = `
+                    <h3 class="chart-title">${config.title}</h3>
+                    <div class="chart-content" id="${config.id}"></div>
+                `;
+                container.appendChild(chartDiv);
+                
+                const chartData = getFieldCounts(config.field);
+                const chartContainer = document.getElementById(config.id);
+                
+                switch (config.type) {
+                    case 'bar':
+                        createBarChart(chartContainer, chartData);
+                        break;
+                    case 'pie':
+                        createPieChart(chartContainer, chartData);
+                        break;
+                    case 'donut':
+                        createDonutChart(chartContainer, chartData);
+                        break;
+                    case 'list':
+                        createListChart(chartContainer, chartData);
+                        break;
+                    default:
+                        createBarChart(chartContainer, chartData);
+                }
+            });
         }
 
         // Update customization panel
@@ -645,8 +849,10 @@
 
         // Update chart config
         function updateChartConfig(index, property, value) {
-            chartConfigs[index][property] = value;
-            renderCharts();
+            if (chartConfigs[index]) {
+                chartConfigs[index][property] = value;
+                renderCharts();
+            }
         }
 
         // Remove chart
@@ -658,15 +864,51 @@
 
         // Add new chart
         function addChart() {
+            if (availableFields.length === 0) return;
+            
             const newChart = {
                 id: `chart_${Date.now()}`,
-                field: availableFields[0] || '',
+                field: availableFields[0],
                 title: 'New Chart',
                 type: 'bar'
             };
             chartConfigs.push(newChart);
             updateCustomizationPanel();
             renderCharts();
+        }
+
+        // Update filter options
+        function updateFilterOptions() {
+            const filterSelect = document.getElementById('filterFieldSelect');
+            const mainFilter = document.getElementById('mainFilter');
+            const smartFilterDiv = document.getElementById('smartFilter');
+            
+            // Update filter field selector
+            filterSelect.innerHTML = '<option value="">No Filter Needed</option>';
+            availableFields.forEach(field => {
+                const option = document.createElement('option');
+                option.value = field;
+                option.textContent = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                if (field === filterField) option.selected = true;
+                filterSelect.appendChild(option);
+            });
+            
+            // Update main filter dropdown
+            if (filterField) {
+                const filterValues = [...new Set(currentData.map(row => row[filterField]))].sort();
+                mainFilter.innerHTML = '<option value="All">All</option>';
+                filterValues.forEach(value => {
+                    if (value) {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = value;
+                        mainFilter.appendChild(option);
+                    }
+                });
+                smartFilterDiv.classList.remove('hidden');
+            } else {
+                smartFilterDiv.classList.add('hidden');
+            }
         }
 
         // Filter data
@@ -682,83 +924,9 @@
             updateDashboard();
         }
 
-        // Get field counts
-        function getFieldCounts(field) {
-            const counts = {};
-            filteredData.forEach(row => {
-                const value = row[field];
-                if (value) {
-                    counts[value] = (counts[value] || 0) + 1;
-                }
-            });
-            
-            return Object.entries(counts)
-                .map(([name, count]) => ({ name, count }))
-                .sort((a, b) => b.count - a.count);
-        }
-
-        // Create data visualization
-        function createDataList(containerId, data, chartType = 'bar') {
-            const container = document.getElementById(containerId);
-            const total = filteredData.length;
-            
-            container.innerHTML = '';
-            
-            if (chartType === 'pie' || chartType === 'donut') {
-                const chartDiv = document.createElement('div');
-                chartDiv.className = chartType === 'pie' ? 'pie-chart' : 'donut-chart';
-                container.appendChild(chartDiv);
-            }
-            
-            // Always show the data list
-            const listDiv = document.createElement('div');
-            listDiv.className = 'data-list';
-            
-            data.forEach((item, index) => {
-                const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
-                const colors = ['#2563eb', '#dc2626', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
-                
-                const div = document.createElement('div');
-                div.className = 'data-item';
-                div.innerHTML = `
-                    <span class="data-name">
-                        <span style="display: inline-block; width: 12px; height: 12px; background: ${colors[index % colors.length]}; margin-right: 8px; border-radius: 2px;"></span>
-                        ${item.name}
-                    </span>
-                    <div class="data-stats">
-                        <div class="data-count">${formatNumber(item.count)}</div>
-                        <div class="data-percent">${percentage}%</div>
-                    </div>
-                `;
-                listDiv.appendChild(div);
-            });
-            
-            container.appendChild(listDiv);
-        }
-
-        // Render all charts
-        function renderCharts() {
-            const container = document.getElementById('chartsContainer');
-            container.innerHTML = '';
-            
-            chartConfigs.forEach(config => {
-                const chartDiv = document.createElement('div');
-                chartDiv.className = 'chart-card';
-                chartDiv.innerHTML = `
-                    <h3 class="chart-title">${config.title}</h3>
-                    <div class="chart-content" id="${config.id}"></div>
-                `;
-                container.appendChild(chartDiv);
-                
-                const chartData = getFieldCounts(config.field);
-                createDataList(config.id, chartData, config.type || 'bar');
-            });
-        }
-
         // Update dashboard
         function updateDashboard() {
             const totalRecords = filteredData.length;
-            
             document.getElementById('totalRecords').textContent = formatNumber(totalRecords);
             
             renderCharts();
@@ -782,39 +950,18 @@
                 try {
                     const csvData = parseCSV(e.target.result);
                     if (csvData.length > 0) {
-                        // Reset everything
                         currentData = csvData;
                         filteredData = [...currentData];
                         
-                        // Detect all field types
-                        const fieldTypes = detectAllFields(currentData);
-                        availableFields = fieldTypes.categorical;
-                        
-                        // Generate chart configs
+                        availableFields = detectCategoricalFields(currentData);
                         chartConfigs = generateDefaultChartConfigs(availableFields);
+                        filterField = null;
                         
-                        // Smart filter suggestion
-                        const suggestedFilter = detectBestFilterField(availableFields, currentData);
-                        filterField = suggestedFilter;
-                        
-                        // Update UI
                         updateFilterOptions();
                         updateCustomizationPanel();
                         updateDashboard();
                         
-                        const statusMsg = suggestedFilter 
-                            ? `Loaded ${formatNumber(csvData.length)} records - Smart filter: ${suggestedFilter}`
-                            : `Loaded ${formatNumber(csvData.length)} records - No filtering needed`;
-                        document.getElementById('status').textContent = statusMsg;
-                        
-                        console.log('File loaded successfully:', {
-                            records: csvData.length,
-                            categoricalFields: fieldTypes.categorical,
-                            numericFields: fieldTypes.numeric,
-                            idFields: fieldTypes.ids,
-                            suggestedFilter
-                        });
-                        
+                        document.getElementById('status').textContent = `Loaded ${formatNumber(csvData.length)} records`;
                     } else {
                         document.getElementById('status').textContent = 'Error: No data found in CSV';
                     }
@@ -822,10 +969,6 @@
                     console.error('CSV parsing error:', error);
                     document.getElementById('status').textContent = 'Error parsing CSV file';
                 }
-            };
-            
-            reader.onerror = function() {
-                document.getElementById('status').textContent = 'Error reading file';
             };
             
             reader.readAsText(file);
@@ -841,9 +984,6 @@
             const currentDate = new Date().toLocaleDateString();
             const recordCount = formatNumber(filteredData.length);
             
-            const summaryCards = document.getElementById('summaryCards').innerHTML;
-            const chartsContainer = document.getElementById('chartsContainer').innerHTML;
-            
             const printContent = `
                 <!DOCTYPE html>
                 <html>
@@ -854,42 +994,19 @@
                         .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
                         .title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
                         .subtitle { color: #666; margin-bottom: 10px; }
-                        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
-                        .summary-card { border: 1px solid #ddd; padding: 15px; text-align: center; border-radius: 5px; }
-                        .summary-number { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-                        .summary-label { font-size: 12px; color: #666; }
-                        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-                        .chart-card { border: 1px solid #ddd; padding: 15px; border-radius: 5px; break-inside: avoid; }
-                        .chart-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
-                        .data-list { display: flex; flex-direction: column; gap: 5px; }
-                        .data-item { display: flex; justify-content: space-between; padding: 8px; background: #f9f9f9; border-radius: 3px; }
-                        .data-name { font-weight: 500; }
-                        .data-stats { text-align: right; }
-                        .data-count { font-weight: 600; }
-                        .data-percent { font-size: 11px; color: #666; }
-                        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
-                        .blue { color: #2563eb; }
-                        .green { color: #059669; }
-                        .purple { color: #7c3aed; }
-                        .orange { color: #ea580c; }
-                        .red { color: #dc2626; }
-                        @media print { body { margin: 0; } .chart-card { page-break-inside: avoid; } }
+                        .summary { text-align: center; font-size: 18px; margin-bottom: 20px; padding: 10px; background: #f0f9ff; border-radius: 5px; }
+                        @media print { body { margin: 0; } }
                     </style>
                 </head>
                 <body>
                     <div class="header">
                         <div class="title">Demographics Dashboard</div>
                         <div class="subtitle">Report Generated - ${currentDate}</div>
-                        <div class="subtitle">Total Records: ${recordCount}</div>
                     </div>
-                    
-                    <div class="summary-grid">${summaryCards}</div>
-                    <div class="charts-grid">${chartsContainer}</div>
-                    
-                    <div class="footer">
-                        <p>Generated from Demographics Dashboard</p>
-                        <p>Report created on ${currentDate}</p>
-                    </div>
+                    <div class="summary">Total Records Analyzed: ${recordCount}</div>
+                    <p style="text-align: center; margin-top: 30px; color: #666;">
+                        Detailed charts and visualizations can be viewed in the interactive dashboard.
+                    </p>
                 </body>
                 </html>
             `;
@@ -907,9 +1024,7 @@
 
         // Initialize dashboard
         function initDashboard() {
-            if (isInitialized) return; // Prevent double initialization
-            
-            console.log('Initializing dashboard...');
+            if (isInitialized) return;
             
             // Set up event listeners
             document.getElementById('csvFile').addEventListener('change', handleFileUpload);
@@ -929,14 +1044,12 @@
             });
             document.getElementById('exportBtn').addEventListener('click', exportToPDF);
             
-            // Load sample data only once
+            // Load sample data
             currentData = generateSampleData();
             filteredData = [...currentData];
-            
-            const fieldTypes = detectAllFields(currentData);
-            availableFields = fieldTypes.categorical;
+            availableFields = detectCategoricalFields(currentData);
             chartConfigs = generateDefaultChartConfigs(availableFields);
-            filterField = 'state'; // Default for sample data
+            filterField = 'state';
             
             updateFilterOptions();
             updateCustomizationPanel();
@@ -944,17 +1057,14 @@
             
             document.getElementById('status').textContent = 'Ready - Sample data loaded';
             isInitialized = true;
-            console.log('Dashboard initialized successfully!');
         }
 
         // Make functions globally available
         window.updateChartConfig = updateChartConfig;
         window.removeChart = removeChart;
         
-        // Start the dashboard when page loads
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', initDashboard);
-        
-        console.log('Dashboard script loaded');
     </script>
 </body>
 </html>
