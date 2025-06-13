@@ -463,6 +463,9 @@
             const filterSelect = document.getElementById('filterFieldSelect');
             const mainFilter = document.getElementById('mainFilter');
             
+            console.log('Updating filter options. Current filterField:', filterField);
+            console.log('Available fields:', availableFields);
+            
             // Update customization panel
             filterSelect.innerHTML = '<option value="">No Filter</option>';
             availableFields.forEach(field => {
@@ -470,11 +473,11 @@
                 option.value = field;
                 option.textContent = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 if (field === filterField) option.selected = true;
-                filterSelect.innerHTML += option.outerHTML;
+                filterSelect.appendChild(option);
             });
             
             // Update main filter dropdown
-            if (filterField) {
+            if (filterField && availableFields.includes(filterField)) {
                 const filterValues = [...new Set(currentData.map(row => row[filterField]))].sort();
                 mainFilter.innerHTML = '<option value="All">All</option>';
                 filterValues.forEach(value => {
@@ -485,9 +488,11 @@
                         mainFilter.appendChild(option);
                     }
                 });
-                mainFilter.style.display = 'block';
+                mainFilter.style.display = 'inline-block';
+                console.log('Filter dropdown shown with', filterValues.length, 'options');
             } else {
                 mainFilter.style.display = 'none';
+                console.log('Filter dropdown hidden');
             }
         }
         
@@ -655,6 +660,8 @@
                 try {
                     const csvData = parseCSV(e.target.result);
                     if (csvData.length > 0) {
+                        console.log('CSV loaded successfully:', csvData.length, 'records');
+                        
                         currentData = csvData;
                         filteredData = [...currentData];
                         
@@ -663,15 +670,20 @@
                         chartConfigs = generateChartConfigs(availableFields);
                         filterField = null; // Reset filter
                         
+                        console.log('Available fields detected:', availableFields);
+                        console.log('Chart configs generated:', chartConfigs.length);
+                        
                         // Update UI
                         updateFilterOptions();
                         updateCustomizationPanel();
                         updateDashboard();
                         
                         // Show customize button
-                        document.getElementById('customizeBtn').style.display = 'inline-block';
+                        const customizeBtn = document.getElementById('customizeBtn');
+                        customizeBtn.style.display = 'inline-block';
+                        console.log('Customize button should now be visible');
                         
-                        document.getElementById('status').textContent = `Loaded ${formatNumber(csvData.length)} records`;
+                        document.getElementById('status').textContent = `Loaded ${formatNumber(csvData.length)} records - Click Customize Charts to configure`;
                     } else {
                         document.getElementById('status').textContent = 'Error: No data found in CSV';
                     }
@@ -721,8 +733,10 @@
             updateCustomizationPanel();
             updateDashboard();
             
-            // Show customize button
-            document.getElementById('customizeBtn').style.display = 'inline-block';
+            // Show customize button for sample data
+            const customizeBtn = document.getElementById('customizeBtn');
+            customizeBtn.style.display = 'inline-block';
+            console.log('Customize button shown');
             
             document.getElementById('status').textContent = 'Ready - Sample data loaded';
             console.log('Dashboard initialized successfully!');
