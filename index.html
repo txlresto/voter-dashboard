@@ -280,6 +280,66 @@
         .btn-red:hover {
             background: #b91c1c;
         }
+        
+        .chart-type-visual {
+            display: inline-block;
+            width: 20px;
+            height: 15px;
+            margin-right: 5px;
+            border: 1px solid #d1d5db;
+            background: #f3f4f6;
+        }
+        
+        .chart-type-visual.bar {
+            background: linear-gradient(to top, #2563eb 60%, #f3f4f6 60%);
+        }
+        
+        .chart-type-visual.pie {
+            border-radius: 50%;
+            background: conic-gradient(#2563eb 0deg 120deg, #dc2626 120deg 240deg, #f59e0b 240deg 360deg);
+        }
+        
+        .chart-type-visual.donut {
+            border-radius: 50%;
+            background: conic-gradient(#2563eb 0deg 120deg, #dc2626 120deg 240deg, #f59e0b 240deg 360deg);
+            position: relative;
+        }
+        
+        .chart-type-visual.donut::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .chart-type-visual.list {
+            background: repeating-linear-gradient(to bottom, #2563eb 0px 3px, #f3f4f6 3px 6px);
+        }
+        
+        .export-section {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .btn-export {
+            background: #dc2626;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-export:hover {
+            background: #b91c1c;
+        }
     </style>
 </head>
 <body>
@@ -305,6 +365,11 @@
                     <span class="status" id="status">Ready</span>
                 </div>
             </div>
+        </div>
+        
+        <!-- Export Section -->
+        <div class="export-section">
+            <button class="btn-export" id="exportBtn">📄 Export Dashboard to PDF</button>
         </div>
         
         <!-- Customization Panel -->
@@ -399,12 +464,20 @@
         // Default chart configurations for sample data
         function getDefaultChartConfigs() {
             return [
-                { id: 'gender', field: 'gender', title: 'Gender Distribution' },
-                { id: 'party', field: 'party', title: 'Party Affiliation' },
-                { id: 'age', field: 'age_range', title: 'Age Distribution' },
-                { id: 'ethnicity', field: 'ethnicity', title: 'Ethnicity Distribution' }
+                { id: 'gender', field: 'gender', title: 'Gender Distribution', type: 'donut' },
+                { id: 'party', field: 'party', title: 'Party Affiliation', type: 'bar' },
+                { id: 'age', field: 'age_range', title: 'Age Distribution', type: 'bar' },
+                { id: 'ethnicity', field: 'ethnicity', title: 'Ethnicity Distribution', type: 'bar' }
             ];
         }
+        
+        // Chart type options
+        const chartTypes = [
+            { value: 'bar', label: 'Bar Chart', visual: 'bar' },
+            { value: 'pie', label: 'Pie Chart', visual: 'pie' },
+            { value: 'donut', label: 'Donut Chart', visual: 'donut' },
+            { value: 'list', label: 'Top List', visual: 'list' }
+        ];
         
         // Detect available fields from data
         function detectFields(data) {
@@ -425,7 +498,8 @@
             return fields.slice(0, 6).map((field, index) => ({
                 id: `chart_${index}`,
                 field: field,
-                title: field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                title: field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                type: index === 0 ? 'donut' : 'bar' // First chart as donut, rest as bars
             }));
         }
         
