@@ -12,10 +12,13 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f9fafb;
-            color: #111827;
+            font-family: 'Segoe UI Semibold', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 600;
+            background: #2d3748;
+            background-attachment: fixed;
+            color: #1f2937;
             line-height: 1.6;
+            min-height: 100vh;
         }
         
         .container {
@@ -29,18 +32,21 @@
         }
         
         .title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #111827;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
             margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-align: center;
         }
         
         .upload-section {
-            background: white;
+            background: #f8fafc;
             padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
         }
         
         .upload-controls {
@@ -51,33 +57,41 @@
         }
         
         .upload-btn {
-            background: #2563eb;
+            background: #4a5568;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border: none;
-            border-radius: 0.375rem;
+            border-radius: 0;
             cursor: pointer;
             font-size: 0.875rem;
-            transition: background-color 0.2s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .upload-btn:hover {
-            background: #1d4ed8;
+            background: #2d3748;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
         .customize-btn {
-            background: #6b7280;
+            background: #718096;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border: none;
-            border-radius: 0.375rem;
+            border-radius: 0;
             cursor: pointer;
             font-size: 0.875rem;
-            transition: background-color 0.2s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .customize-btn:hover {
-            background: #4b5563;
+            background: #4a5568;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
         .select {
@@ -100,29 +114,64 @@
         }
         
         .summary-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background: #f8fafc;
+            padding: 1.75rem;
+            border-radius: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
         }
         
         .summary-number {
-            font-size: 1.875rem;
-            font-weight: bold;
-            margin-bottom: 0.25rem;
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
         }
         
         .summary-label {
             font-size: 0.875rem;
-            color: #6b7280;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
-        .blue { color: #2563eb; }
-        .green { color: #059669; }
-        .purple { color: #7c3aed; }
-        .orange { color: #ea580c; }
-        .red { color: #dc2626; }
+        .blue { 
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .green { 
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .purple { 
+            background: linear-gradient(135deg, #9f7aea, #805ad5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .orange { 
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .red { 
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         
         .charts-grid {
             display: grid;
@@ -132,18 +181,30 @@
         }
         
         .chart-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            min-height: 300px;
+            background: #f8fafc;
+            padding: 1.75rem;
+            border-radius: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-height: 320px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
         }
         
         .chart-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
             text-align: center;
+            color: #1e293b;
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .chart-content {
@@ -159,39 +220,49 @@
         .bar-item {
             display: flex;
             align-items: center;
-            margin-bottom: 0.5rem;
-            padding: 0.5rem;
-            background: #f9fafb;
-            border-radius: 0.25rem;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            background: #ffffff;
+            border-radius: 0;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        
+        .bar-item:hover {
+            background: #f1f5f9;
+            transform: translateX(2px);
         }
         
         .bar-label {
-            width: 120px;
-            font-weight: 500;
+            width: 130px;
+            font-weight: 600;
             font-size: 0.875rem;
-            margin-right: 0.5rem;
+            margin-right: 0.75rem;
+            color: #1e293b;
         }
         
         .bar-visual {
             flex: 1;
-            height: 20px;
-            background: #e5e7eb;
-            border-radius: 10px;
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 0;
             overflow: hidden;
-            margin-right: 0.5rem;
+            margin-right: 0.75rem;
         }
         
         .bar-fill {
             height: 100%;
-            background: #2563eb;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, #4a5568, #2d3748);
+            transition: width 0.5s ease;
+            border-radius: 0;
         }
         
         .bar-value {
-            width: 60px;
+            width: 70px;
             text-align: right;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.875rem;
+            color: #1e293b;
         }
         
         .pie-chart-container {
@@ -260,22 +331,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background: #f9fafb;
-            border-radius: 0.375rem;
-            border-left: 4px solid #2563eb;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: #ffffff;
+            border-radius: 0;
+            border-left: 4px solid;
+            border-left-color: #4a5568;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        
+        .list-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
         }
         
         .list-rank {
-            font-weight: bold;
-            color: #6b7280;
-            margin-right: 0.5rem;
+            font-weight: 700;
+            color: #64748b;
+            margin-right: 0.75rem;
         }
         
         .list-name {
             flex: 1;
-            font-weight: 500;
+            font-weight: 600;
+            color: #1e293b;
         }
         
         .list-stats {
@@ -283,22 +363,24 @@
         }
         
         .list-count {
-            font-weight: 600;
-            color: #111827;
+            font-weight: 700;
+            color: #1e293b;
         }
         
         .list-percent {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: #64748b;
+            font-weight: 500;
         }
         
         .customize-panel {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background: #f8fafc;
+            padding: 1.75rem;
+            border-radius: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 1.5rem;
             display: none;
+            border: 1px solid #e2e8f0;
         }
         
         .customize-panel.show {
@@ -306,9 +388,10 @@
         }
         
         .customize-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            font-size: 1.375rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: #1e293b;
         }
         
         .field-config {
@@ -316,26 +399,105 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
             margin-bottom: 1rem;
-            padding: 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
+            padding: 1.25rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0;
+            background: #ffffff;
         }
         
         .field-config label {
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             color: #374151;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
             display: block;
         }
         
         .field-config input,
         .field-config select {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.25rem;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0;
             font-size: 0.875rem;
+            font-weight: 500;
+            transition: border-color 0.2s ease;
+        }
+        
+        .field-config input:focus,
+        .field-config select:focus {
+            outline: none;
+            border-color: #4a5568;
+        }
+        
+        .value-filter {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: #f1f5f9;
+            border-radius: 0;
+            border: 1px solid #cbd5e1;
+        }
+        
+        .value-filter-header {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .filter-mode {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-mode.include {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .filter-mode.exclude {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .value-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.375rem;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            transform: scale(1.1);
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            color: #1e293b;
         }
         
         .btn-group {
@@ -599,16 +761,37 @@
                 id: `chart_${index}`,
                 field: field,
                 title: field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                type: index === 0 ? 'donut' : 'bar'
+                type: index === 0 ? 'donut' : 'bar',
+                valueFilter: {
+                    mode: 'include', // 'include' or 'exclude'
+                    values: [] // empty array means show all
+                }
             }));
         }
 
-        // Get field counts
-        function getFieldCounts(field) {
+        // Get field counts with value filtering
+        function getFieldCounts(field, valueFilter = null) {
             if (!field) return [];
             
+            let dataToUse = filteredData;
+            
+            // Apply value filtering if specified
+            if (valueFilter && valueFilter.values && valueFilter.values.length > 0) {
+                if (valueFilter.mode === 'include') {
+                    // Only include selected values
+                    dataToUse = filteredData.filter(row => 
+                        valueFilter.values.includes(row[field])
+                    );
+                } else if (valueFilter.mode === 'exclude') {
+                    // Exclude selected values
+                    dataToUse = filteredData.filter(row => 
+                        !valueFilter.values.includes(row[field])
+                    );
+                }
+            }
+            
             const counts = {};
-            filteredData.forEach(row => {
+            dataToUse.forEach(row => {
                 const value = row[field];
                 if (value && value !== '') {
                     counts[value] = (counts[value] || 0) + 1;
@@ -788,7 +971,7 @@
                 `;
                 container.appendChild(chartDiv);
                 
-                const chartData = getFieldCounts(config.field);
+                const chartData = getFieldCounts(config.field, config.valueFilter);
                 const chartContainer = document.getElementById(config.id);
                 
                 switch (config.type) {
@@ -851,7 +1034,52 @@
         function updateChartConfig(index, property, value) {
             if (chartConfigs[index]) {
                 chartConfigs[index][property] = value;
+                
+                // If field changed, reset value filter and update checkboxes
+                if (property === 'field') {
+                    chartConfigs[index].valueFilter = { mode: 'include', values: [] };
+                    updateCustomizationPanel();
+                }
+                
                 renderCharts();
+            }
+        }
+
+        // Toggle filter mode between include/exclude
+        function toggleFilterMode(index) {
+            if (chartConfigs[index]) {
+                const currentMode = chartConfigs[index].valueFilter.mode;
+                chartConfigs[index].valueFilter.mode = currentMode === 'include' ? 'exclude' : 'include';
+                updateCustomizationPanel();
+                renderCharts();
+            }
+        }
+
+        // Update value filter when checkbox is changed
+        function updateValueFilter(index, value, checked) {
+            if (chartConfigs[index]) {
+                const valueFilter = chartConfigs[index].valueFilter;
+                
+                if (checked) {
+                    // Add value to filter
+                    if (!valueFilter.values.includes(value)) {
+                        valueFilter.values.push(value);
+                    }
+                } else {
+                    // Remove value from filter
+                    valueFilter.values = valueFilter.values.filter(v => v !== value);
+                }
+                
+                renderCharts();
+                
+                // Update the status text
+                const statusElement = document.querySelector(`#checkboxes_${index}`).nextElementSibling;
+                if (valueFilter.values.length === 0) {
+                    statusElement.textContent = 'All values shown';
+                } else {
+                    const action = valueFilter.mode === 'include' ? 'Showing only' : 'Excluding';
+                    statusElement.textContent = `${action}: ${valueFilter.values.join(', ')}`;
+                }
             }
         }
 
@@ -870,7 +1098,11 @@
                 id: `chart_${Date.now()}`,
                 field: availableFields[0],
                 title: 'New Chart',
-                type: 'bar'
+                type: 'bar',
+                valueFilter: {
+                    mode: 'include',
+                    values: []
+                }
             };
             chartConfigs.push(newChart);
             updateCustomizationPanel();
@@ -980,46 +1212,236 @@
             button.textContent = '📄 Generating PDF...';
             button.disabled = true;
             
-            const printWindow = window.open('', '_blank');
+            // Create a comprehensive print-friendly version
             const currentDate = new Date().toLocaleDateString();
             const recordCount = formatNumber(filteredData.length);
+            
+            // Get all current data for the PDF
+            const summaryData = {
+                totalRecords: formatNumber(filteredData.length),
+                // Add other summary metrics if available
+            };
+            
+            // Get chart data for each visible chart
+            const chartData = chartConfigs
+                .filter(config => config.visible)
+                .map(config => {
+                    const data = getFieldCounts(config.field, config.valueFilter);
+                    return {
+                        title: config.title,
+                        type: config.type,
+                        data: data.slice(0, 10), // Top 10 items
+                        total: data.reduce((sum, item) => sum + item.count, 0)
+                    };
+                });
+            
+            // Create print window with comprehensive content
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
             
             const printContent = `
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Demographics Dashboard - ${currentDate}</title>
+                    <title>Demographics Dashboard Report - ${currentDate}</title>
+                    <meta charset="UTF-8">
                     <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-                        .title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-                        .subtitle { color: #666; margin-bottom: 10px; }
-                        .summary { text-align: center; font-size: 18px; margin-bottom: 20px; padding: 10px; background: #f0f9ff; border-radius: 5px; }
-                        @media print { body { margin: 0; } }
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { 
+                            font-family: 'Segoe UI', Arial, sans-serif; 
+                            line-height: 1.4;
+                            color: #333;
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 20px;
+                        }
+                        .header { 
+                            text-align: center; 
+                            border-bottom: 3px solid #4a5568; 
+                            padding-bottom: 20px; 
+                            margin-bottom: 30px; 
+                        }
+                        .title { 
+                            font-size: 28px; 
+                            font-weight: bold; 
+                            margin-bottom: 5px;
+                            color: #2d3748;
+                        }
+                        .subtitle { 
+                            color: #666; 
+                            font-size: 14px;
+                            margin-bottom: 5px; 
+                        }
+                        .summary-section {
+                            background: #f8fafc;
+                            padding: 20px;
+                            margin-bottom: 30px;
+                            border: 1px solid #e2e8f0;
+                        }
+                        .summary-title {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin-bottom: 15px;
+                            color: #2d3748;
+                        }
+                        .summary-stat {
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #4a5568;
+                            text-align: center;
+                        }
+                        .chart-section { 
+                            margin-bottom: 40px;
+                            page-break-inside: avoid;
+                        }
+                        .chart-title { 
+                            font-size: 16px; 
+                            font-weight: bold; 
+                            margin-bottom: 15px;
+                            color: #2d3748;
+                            border-bottom: 2px solid #4a5568;
+                            padding-bottom: 5px;
+                        }
+                        .data-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 10px;
+                        }
+                        .data-table th {
+                            background: #4a5568;
+                            color: white;
+                            padding: 10px;
+                            text-align: left;
+                            font-weight: bold;
+                        }
+                        .data-table td {
+                            padding: 8px 10px;
+                            border-bottom: 1px solid #e2e8f0;
+                        }
+                        .data-table tr:nth-child(even) {
+                            background: #f8fafc;
+                        }
+                        .rank { 
+                            font-weight: bold; 
+                            color: #4a5568;
+                            width: 40px;
+                            text-align: center;
+                        }
+                        .name { 
+                            font-weight: 500; 
+                        }
+                        .count { 
+                            font-weight: bold; 
+                            text-align: right;
+                            width: 80px;
+                        }
+                        .percent { 
+                            color: #666; 
+                            text-align: right;
+                            width: 60px;
+                        }
+                        .footer { 
+                            text-align: center; 
+                            margin-top: 40px; 
+                            padding-top: 20px;
+                            border-top: 1px solid #e2e8f0;
+                            color: #666; 
+                            font-size: 12px; 
+                        }
+                        @media print {
+                            body { margin: 0; padding: 15px; }
+                            .chart-section { page-break-inside: avoid; }
+                            .header { page-break-after: avoid; }
+                        }
+                        @page {
+                            margin: 0.5in;
+                        }
                     </style>
                 </head>
                 <body>
                     <div class="header">
-                        <div class="title">Demographics Dashboard</div>
-                        <div class="subtitle">Report Generated - ${currentDate}</div>
+                        <div class="title">Demographics Dashboard Report</div>
+                        <div class="subtitle">Generated on ${currentDate}</div>
+                        <div class="subtitle">Analysis Period: Current Dataset</div>
                     </div>
-                    <div class="summary">Total Records Analyzed: ${recordCount}</div>
-                    <p style="text-align: center; margin-top: 30px; color: #666;">
-                        Detailed charts and visualizations can be viewed in the interactive dashboard.
-                    </p>
+                    
+                    <div class="summary-section">
+                        <div class="summary-title">Dataset Summary</div>
+                        <div class="summary-stat">${recordCount} Total Records Analyzed</div>
+                    </div>
+                    
+                    ${chartData.map(chart => `
+                        <div class="chart-section">
+                            <div class="chart-title">${chart.title} (${chart.type.replace('_', ' ')} chart)</div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Category</th>
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${chart.data.map((item, index) => {
+                                        const percentage = chart.total > 0 ? ((item.count / chart.total) * 100).toFixed(1) : '0.0';
+                                        return `
+                                            <tr>
+                                                <td class="rank">${index + 1}</td>
+                                                <td class="name">${item.name}</td>
+                                                <td class="count">${formatNumber(item.count)}</td>
+                                                <td class="percent">${percentage}%</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `).join('')}
+                    
+                    <div class="footer">
+                        <p><strong>Demographics Dashboard Report</strong></p>
+                        <p>Generated on ${currentDate} at ${new Date().toLocaleTimeString()}</p>
+                        <p>Total Records: ${recordCount} | Charts: ${chartData.length}</p>
+                    </div>
                 </body>
                 </html>
             `;
             
-            printWindow.document.write(printContent);
-            printWindow.document.close();
-            
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
+            try {
+                printWindow.document.write(printContent);
+                printWindow.document.close();
+                
+                // Wait for content to load, then trigger print
+                printWindow.onload = function() {
+                    setTimeout(() => {
+                        printWindow.focus();
+                        printWindow.print();
+                        
+                        // Reset button after print dialog
+                        setTimeout(() => {
+                            if (!printWindow.closed) {
+                                printWindow.close();
+                            }
+                            button.textContent = '📄 Export Dashboard to PDF';
+                            button.disabled = false;
+                        }, 1000);
+                    }, 500);
+                };
+                
+                // Fallback if onload doesn't fire
+                setTimeout(() => {
+                    if (button.disabled) {
+                        button.textContent = '📄 Export Dashboard to PDF';
+                        button.disabled = false;
+                    }
+                }, 5000);
+                
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again or check if pop-ups are blocked.');
                 button.textContent = '📄 Export Dashboard to PDF';
                 button.disabled = false;
-            }, 1000);
+            }
         }
 
         // Initialize dashboard
@@ -1062,6 +1484,8 @@
         // Make functions globally available
         window.updateChartConfig = updateChartConfig;
         window.removeChart = removeChart;
+        window.toggleFilterMode = toggleFilterMode;
+        window.updateValueFilter = updateValueFilter;
         
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', initDashboard);
